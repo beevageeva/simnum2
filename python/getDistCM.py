@@ -4,7 +4,6 @@ from math import sqrt
 from const import numModels, outFolderName, modelFolderName, noraFolderName, modelname
 from common import createFolder
 
-
 files = {}
 
 outFolder = createFolder(outFolderName)
@@ -25,7 +24,7 @@ def getRad(s):
 	#print(s)
 	#print("output end")
 	lines = s.split("\n")
-	rexpr = re.compile("median position\s+:" + "\s+([\dE.\+-]+)" * 3)
+	rexpr = re.compile("cm position\s+:" + "\s+([\dE.\+-]+)" * 3)
 	for l in lines:
 		
 		#print("Line is %s" %l)
@@ -79,8 +78,8 @@ try:
 		#print("--------------------------------000")
 		
 	
-		child.sendline("medcent")
-		child.expect (['medcntr>>.+nora>>',pexpect.EOF])  
+		child.sendline("cmcent")
+		child.expect (['cmcntr>>.+nora>>',pexpect.EOF])  
 		#print("--------------------------------medcent")
 		#print(child.before)
 		#print("--------------------------------2")
@@ -91,8 +90,8 @@ try:
 		#print("--------------------------------0111")
 		#print(child.before)
 		#print("--------------------------------01222")
-		child.sendline("medcent")
-		child.expect (['medcntr>>.+nora>>',pexpect.EOF])  
+		child.sendline("cmcent")
+		child.expect (['cmcntr>>.+nora>>',pexpect.EOF])  
 		#print("--------------------------------01133")
 		#print(child.before)
 		getRad(child.after)

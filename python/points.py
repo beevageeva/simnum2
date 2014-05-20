@@ -1,6 +1,7 @@
 import pexpect,re
 import os.path
 from const import outFolderName, modelname, numModels, modelFolderName, noraFolderName
+import os
 
 RM = 200
 
@@ -14,9 +15,11 @@ def getPoints(child):
 	child.sendline("points %d" % RM)
 	child.expect ('nora>>')
 
-
-
-child = pexpect.spawn(os.path.join(noraFolderName,'nora'),  cwd=modelFolderName)
+cdir = os.getcwd()
+#print("CWD=%s"%cdir)
+os.chdir(modelFolderName)
+#child = pexpect.spawn(os.path.join(noraFolderName,'nora'),  cwd=modelFolderName)
+child = pexpect.spawn(os.path.join(noraFolderName,'nora'))
 child.expect("nora>>")
 child.sendline("data %s 1 %d 1" % (modelname,numModels))
 child.expect("nora>>")
@@ -27,6 +30,5 @@ for i in range(1,numModels+1):
 	child.expect("getmodel>>.+nora>>")
 	getPoints(child)	
 
-
-
 child.close()
+os.chdir(cdir)

@@ -66,6 +66,7 @@ Despues de relajar los modelos miramos el radio total calculamos  la separación
 Se obtienen Vr, Vt(en el caso de una órbita  parabólica: eccentricity = 1 Vt = 0, pero para eccentricity=0.7 - órbita elíptica Vt>0) y Period(el tiempo necesario para el encuentro)
 
 \item ejecutar setorb con la entrada sep y velocidad obtenidas de kepler y salida el modelo con los 2 objetos en orbita
+\item escalar el modelo obtenido: M2/M1 = 1/1.33 = 0.751, R2/R1 = sqrt(M2/M1) = 0.8671
 \item ejecutar tree500 con el modelo obtenido con setorb dejando los demas parámetros igual que en el paso, sólo modificamos nsteps con el valor un poco mas grande que el Period obtenido en kepler. El valor sale demasiado grande y es inválido asi que ejecuto tree500 varias veces con el nsteps = 2000
 
 
@@ -111,10 +112,12 @@ La distancia entre los 2 centros está definida por la salida del segundo medcen
 median position :    1.801E-04   1.954E-01  -8.183E-02
 en este caso la distancia es  (1.801E-04 **2 +  1.954E-01**2+  8.183E-02**2)**0.5 = 0.2118427278336691
 
+
+
 \begin{figure}[!h]
  \centering
  \includegraphics[scale=0.4]{imgDistcon.png}
- \caption{\emph{Distancia entre los centros de las 2 galaxias}}
+ \caption{\emph{Distancia entre los centros de las 2 galaxias obtenida en nora con medcent}}
  \label{Fig: 3}
 \end{figure}
 
@@ -136,21 +139,22 @@ El siguiente  mínimo para la distancia es para el modelo 89(con el valor mínim
  \label{Fig: 5}
 \end{figure}
 
+medcent centra por la mediana de posiciones, para centrar por el centro de masas hay que usar cmcent
 El radio y la distancia entre los centros de los 2 sistemas se pueden obtener tambien directamente del modelo(sin usar nora), para ello sacamos los modelos para cada modelNumber con xvp-asc lo que hay que hacer si queremos representar como varía la velocidad(en nuestro caso nos interesa la velocidad radial) o el momento angular en el tiempo
 
 Calculando el centro de masas de cada sistema con :
 $\sum{m_ir_i}$ (M=1), donde $m_i$ es la masa de cada particula y $r_i$ es la posición 
-y luego haciendo la diferencia entre los 2 valores se obtiene el gráfico para la distancia(diferente del metodo con nora/medcent)
+y luego haciendo la diferencia entre los 2 valores se obtiene el gráfico para la distancia(el gráfico es diferente del gráfico obtenido con medcent pero es muy parecido al gráfico obtenido en nora con cmcent - tienen el mismo mínimo para modelNumber = 77)
 
 \begin{figure}[!h]
  \centering
- \includegraphics[scale=0.5]{imgDistcon2.png}
- \caption{\emph{}}
+ \includegraphics[scale=0.2]{imgDistcon2Comb.png}
+ \caption{\emph{La evolución de la distancia de los centros de masa de las 2 galaxias: a la izquierda calculado con cmcent y a la derecha calculada de los valores del modelo}}
  \label{Fig: 5}
 \end{figure}
 \end{itemize}
 
-El mínimo en el modelo 3 sigue igual(el problema del modelo anterior), pero el siguiente mínimo es esta vez 77 y la imagen obtenida con noraal radio máximo 50 es:
+El mínimo en el modelo 3 sigue igual(el problema del modelo anterior), pero el siguiente mínimo es esta vez 77 y la imagen obtenida con nora al radio máximo 50 es:
 
 \begin{figure}[!h]
  \centering

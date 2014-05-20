@@ -10,10 +10,12 @@ from const import outFolderName, modelFolderName, numModels, fin1
 outFolder = createFolder(outFolderName)
 
 outMaxVelRadFile = "outMaxVelRad"
+outMaxVelTanFile = "outMaxVelTan"
 outCMDifFile = "outCMDif"
 outAMFile = "outAM"
 
 outMaxVelRad = open(os.path.join(outFolder,outMaxVelRadFile), "w")
+outMaxVelTan = open(os.path.join(outFolder,outMaxVelTanFile), "w")
 outCMDif = open(os.path.join(outFolder,outCMDifFile), "w")
 outAM = open(os.path.join(outFolder,outAMFile), "w")
 
@@ -60,13 +62,23 @@ for i in range(1,numModels+1):
 	outCMDif.write("%s\n" % " ".join(map(str,cm2-cm1)))
 	outAM.write("%s\n" % " " .join(map(str,am)))
 	vrMax = np.max(np.sqrt(data[numpart:,0] ** 2 + data[numpart:,1] ** 2 + data[numpart:,2] ** 2))
+	vTheta = np.arctan(data[numpart:,1]/ data[numpart:,0])
+	#vPhi = np.arctan(np.sqrt(data[numpart:,0] ** 2 + data[numpart:,1] ** 2) /  data[numpart:,2])
+	vPhi = np.arccos(data[numpart:,2] /  radius)
+		
+	vt = np.sqrt(vTheta **2 + vPhi **2)
+	print(vt)
+	vtMax = np.max(vt)
+
 	outMaxVelRad.write("%E\n" % vrMax)
+	outMaxVelTan.write("%E\n" % vtMax)
 	
 
 
 
 
 outMaxVelRad.close()
+outMaxVelTan.close()
 outCMDif.close()
 outAM.close()
 
