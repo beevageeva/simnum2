@@ -1,0 +1,5 @@
+echo $LD_LIBRARY_PATH > old_ld_library_path
+#tcsh
+setenv LD_LIBRARY_PATH  `cat cca_ld_library_path`
+#bash
+export  LD_LIBRARY_PATH=`cat cca_ld_library_path`
