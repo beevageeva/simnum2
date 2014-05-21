@@ -61,13 +61,14 @@ for i in range(1,numModels+1):
 
 	outCMDif.write("%s\n" % " ".join(map(str,cm2-cm1)))
 	outAM.write("%s\n" % " " .join(map(str,am)))
-	vrMax = np.max(np.sqrt(data[numpart:,0] ** 2 + data[numpart:,1] ** 2 + data[numpart:,2] ** 2))
+	vRad = np.sqrt(data[numpart:,0] ** 2 + data[numpart:,1] ** 2 + data[numpart:,2] ** 2)	
+	vrMax = np.max(vRad)
 	vTheta = np.arctan(data[numpart:,1]/ data[numpart:,0])
 	#vPhi = np.arctan(np.sqrt(data[numpart:,0] ** 2 + data[numpart:,1] ** 2) /  data[numpart:,2])
-	vPhi = np.arccos(data[numpart:,2] /  radius)
+	vPhi = np.arccos(data[numpart:,2] /  vRad)
 		
 	vt = np.sqrt(vTheta **2 + vPhi **2)
-	print(vt)
+	#print(vt)
 	vtMax = np.max(vt)
 
 	outMaxVelRad.write("%E\n" % vrMax)
