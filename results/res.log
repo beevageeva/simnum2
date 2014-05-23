@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.9.6)  21 MAY 2014 16:47
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.9.6)  23 MAY 2014 21:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -943,6 +943,36 @@ LaTeX Warning: Label `Fig: 5' multiply defined.
 
 LaTeX Warning: Label `Fig: 5' multiply defined.
 
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
+
+LaTeX Warning: Label `Fig: 5' multiply defined.
+
 )
 \openout1 = `res.aux'.
 
@@ -1079,34 +1109,24 @@ Package pdftex.def Info: imgDistcon.png used on input line 119.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<imgConModel3Points10.png, id=43, 515.9275pt x 665.48625pt>
-File: imgConModel3Points10.png Graphic file (type png)
-
-<use imgConModel3Points10.png>
-Package pdftex.def Info: imgConModel3Points10.png used on input line 128.
-(pdftex.def)             Requested size: 257.96312pt x 332.74231pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-<imgConModel89Points50.png, id=44, 515.9275pt x 665.48625pt>
+<imgConModel89Points50.png, id=43, 515.9275pt x 665.48625pt>
 File: imgConModel89Points50.png Graphic file (type png)
 
 <use imgConModel89Points50.png>
-Package pdftex.def Info: imgConModel89Points50.png used on input line 137.
+Package pdftex.def Info: imgConModel89Points50.png used on input line 132.
 (pdftex.def)             Requested size: 257.96312pt x 332.74231pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[4 <./imgRadcon2.png>] <imgDistcon2Comb.png, id=51, 2525.435pt x 1094.0875pt>
+[4 <./imgRadcon2.png>] <imgDistcon2Comb.png, id=50, 2525.435pt x 1094.0875pt>
 File: imgDistcon2Comb.png Graphic file (type png)
 
 <use imgDistcon2Comb.png>
-Package pdftex.def Info: imgDistcon2Comb.png used on input line 151.
+Package pdftex.def Info: imgDistcon2Comb.png used on input line 146.
 (pdftex.def)             Requested size: 505.07806pt x 218.81361pt.
 
-Overfull \hbox (115.07806pt too wide) in paragraph at lines 151--152
+Overfull \hbox (115.07806pt too wide) in paragraph at lines 146--147
  [][] 
  []
 
@@ -1114,54 +1134,166 @@ Overfull \hbox (115.07806pt too wide) in paragraph at lines 151--152
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [5 <./imgDistcon.png>]
-<imgConModel77Points50.png, id=59, 515.9275pt x 665.48625pt>
+<imgConModel77Points50.png, id=58, 515.9275pt x 665.48625pt>
 File: imgConModel77Points50.png Graphic file (type png)
 
 <use imgConModel77Points50.png>
-Package pdftex.def Info: imgConModel77Points50.png used on input line 161.
+Package pdftex.def Info: imgConModel77Points50.png used on input line 156.
 (pdftex.def)             Requested size: 257.96312pt x 332.74231pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 172.
-[6 <./imgConModel3Points10.png>] [7 <./imgConModel89Points50.png>] [8 <./imgDis
-tcon2Comb.png>] [9 <./imgConModel77Points50.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 172.
+<imgConHaloEbindComb.png, id=59, 2095.83pt x 1347.0325pt>
+File: imgConHaloEbindComb.png Graphic file (type png)
+
+<use imgConHaloEbindComb.png>
+Package pdftex.def Info: imgConHaloEbindComb.png used on input line 164.
+(pdftex.def)             Requested size: 419.15858pt x 269.40173pt.
+
+Overfull \hbox (29.15858pt too wide) in paragraph at lines 164--165
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<manyptsCH.png, id=60, 515.9275pt x 665.48625pt>
+File: manyptsCH.png Graphic file (type png)
+ <use manyptsCH.png>
+Package pdftex.def Info: manyptsCH.png used on input line 171.
+(pdftex.def)             Requested size: 206.36734pt x 266.18977pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \vbox (badness 1810) has occurred while \output is active []
+
+ [6 <./imgConModel89Points50.png>] <sbrCH77-all.png, id=68, 1571.8725pt x 673.5
+1625pt>
+File: sbrCH77-all.png Graphic file (type png)
+
+<use sbrCH77-all.png>
+Package pdftex.def Info: sbrCH77-all.png used on input line 191.
+(pdftex.def)             Requested size: 314.36893pt x 134.70085pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[7 <./imgDistcon2Comb.png>]
+<rotc265-0-60-1-all.png, id=75, 1571.8725pt x 673.51625pt>
+File: rotc265-0-60-1-all.png Graphic file (type png)
+
+<use rotc265-0-60-1-all.png>
+Package pdftex.def Info: rotc265-0-60-1-all.png used on input line 206.
+(pdftex.def)             Requested size: 314.36893pt x 134.70085pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<shell.png, id=76, 2095.83pt x 673.51625pt>
+File: shell.png Graphic file (type png)
+ <use shell.png>
+Package pdftex.def Info: shell.png used on input line 215.
+(pdftex.def)             Requested size: 419.15858pt x 134.70085pt.
+
+Overfull \hbox (29.15858pt too wide) in paragraph at lines 215--216
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [8 <./imgConModel77Points50.png>] <am.png, id=83, 3788.1525pt x 2188.175pt>
+File: am.png Graphic file (type png)
+ <use am.png>
+Package pdftex.def Info: am.png used on input line 228.
+(pdftex.def)             Requested size: 378.83745pt x 218.83032pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<en.png, id=84, 3788.1525pt x 2188.175pt>
+File: en.png Graphic file (type png)
+ <use en.png>
+Package pdftex.def Info: en.png used on input line 235.
+(pdftex.def)             Requested size: 378.83745pt x 218.83032pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<cmdif.png, id=85, 3788.1525pt x 2188.175pt>
+File: cmdif.png Graphic file (type png)
+ <use cmdif.png>
+Package pdftex.def Info: cmdif.png used on input line 242.
+(pdftex.def)             Requested size: 378.83745pt x 218.83032pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<vr.png, id=86, 3788.1525pt x 2188.175pt>
+File: vr.png Graphic file (type png)
+ <use vr.png>
+Package pdftex.def Info: vr.png used on input line 249.
+(pdftex.def)             Requested size: 378.83745pt x 218.83032pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<vt.png, id=87, 3788.1525pt x 2188.175pt>
+File: vt.png Graphic file (type png)
+ <use vt.png>
+Package pdftex.def Info: vt.png used on input line 256.
+(pdftex.def)             Requested size: 378.83745pt x 218.83032pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[9 <./imgConHaloEbindComb.png>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 280.
+ [10 <./manyptsCH.png> <./sbrCH77-all.png>]
+[11 <./rotc265-0-60-1-all.png> <./shell.png>] [12 <./am.png> <./en.png>]
+[13 <./cmdif.png> <./vr.png>] [14 <./vt.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 280.
  (./res.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 172.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 172.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 280.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 280.
 Package rerunfilecheck Info: File `res.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 172.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 280.
  ) 
 Here is how much of TeX's memory you used:
- 18898 strings out of 493909
- 343652 string characters out of 6153343
- 452181 words of memory out of 5000000
- 21860 multiletter control sequences out of 15000+600000
+ 18958 strings out of 493909
+ 344480 string characters out of 6153343
+ 453110 words of memory out of 5000000
+ 21895 multiletter control sequences out of 15000+600000
  9759 words of font info for 37 fonts, out of 8000000 for 9000
  599 hyphenation exceptions out of 8191
- 70i,7n,61p,465b,430s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 70i,8n,61p,465b,430s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-tt12.pfb>
-Output written on res.pdf (9 pages, 384787 bytes).
+type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti
+12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb
+>
+Output written on res.pdf (14 pages, 1897948 bytes).
 PDF statistics:
- 127 PDF objects out of 1000 (max. 8388607)
- 92 compressed objects within 1 object stream
- 25 named destinations out of 1000 (max. 500000)
- 48 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 177 PDF objects out of 1000 (max. 8388607)
+ 126 compressed objects within 2 object streams
+ 41 named destinations out of 1000 (max. 500000)
+ 93 words of extra memory for PDF output out of 10000 (max. 10000000)
 
