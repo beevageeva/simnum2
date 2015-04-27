@@ -89,7 +89,7 @@ Se obtienen Vr, Vt(en el caso de una órbita  parabólica: eccentricity = 1 Vt =
 
 \item las 2 con halo\\
 con halo numberModels = 265  $\implies$ Time = 1335.6 menor que period (calculado con kepler) 4171.98
-Representamos el radio del sistema binario con la evolución del tiempo
+Representamos el radio del sistema binario con la evolucion(ahora el radio para la fraccion 1 esta bien)
 
 
 \begin{figure}[!h]
@@ -166,109 +166,51 @@ Ebind para el sistema en orden izq-derecha, top-down (modelNumber: 1,2,20,50,100
  \label{Fig: 5}
 \end{figure}
 
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.4]{manyptsCH.png}
- \caption{\emph{Evolucion del sistema binario los 2 con halo(salida de nora manypts)}}
- \label{Fig: 5}
-\end{figure}
 
 
 
 
-Probar Vaucouleurs law(el perfil Sersic para galaxias elípticas - el exponente del radius n = 4):
+
+Probar Vaucouleurs law(el perfil Sersic para galaxias elípticas):
 $I(r) = I_0 * e^{-kr^\frac{1}{4}} \implies ln(I(r)) = ln(I_0) - kr^\frac{1}{4}$, donde $I_0 =I(0)$, I es el brillo superficial que es proporcional a la densidad de masa proyectada
-Consideramos el modelo 77 (cuando están mas cerca) y observamos que la parte intermedia sigue el perfil, pero en la parte central el brillo es menor que esperado(por el softening?) y en la parte exterior es un poco por encima del perfil(por las particulas que se escapan - hay mas particulas que e escapan en este tipo de colisión que si las masas fueran iguales)
 
-Para seleccionar solo las particulas del bulbo de las 2 hay que usar bodsreloc:(bodsrange no admite mas de 1 intervalo)
-\begin{verbatim}
-	 bodsreloc 50001 60000 10000
-\end{verbatim}
-en este caso y luego bodsrange 
+deviations:
 
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.2]{sbrCH77-all.png}
- \caption{\emph{sbr 100 2 para el modelo 77 entero, solo bulbo, solo halo}}
- \label{Fig: 5}
-\end{figure}
+inner parts becasue of the core
+outer parts because of escaping material - smaller galaxy -> larger radius
 
 
-2 galaxias de masas diferentes van a fusionar en una que va a tener la velocidad de rotación mayor que si fueran de masas iguales. Las fuerzas de marea en este caso son mas eficientes y la friccion dinámica menor.
-Los sistemas con mayor masa van a tener mas velocidad de rotación(del T. virial) y mas  dispersión de velocidad (el halo explica asi velocidades mas grandes  a radius mas grandes donde la velocidad tenía que ser menos que la observada - por el desplazamiento en las líneas espectrales - si se calculara la masa solo teniendo en cuenta las particulas luminosas).
-Se puede ver en el grafico de la energia (la comparación) que los modelos con halo tienen mas energia cinetica y potencial al encuentro y que en el caso de 2 objetos de la misma masa la energia cinetica es mucho mayor que en el caso que M1/M2 = 3.
-Para las galaxias elipticas la velocidad de rotación es menor que la dispersión de velocidad y cuanto mayor es la masa v/sigma es menor
+Unequal-mass mergers rotate faster than equal-mass mergers
+In this case the tidal forces are more effective in disrupting the progenitors before coalescence, so dynamical friction is less effective. As a result, the remnants have more angular momentum in their inner parts than spiral-spiral mergers, placing them not far from the oblate-isotropic line in the v / sigma - epsilon diagram, and their outer parts may reach v / sigma ~ 1
+v/ sigma ~ 1 for dwarf elliptical -- considerably flattened  by sigma
+flattened elliptical -> expected to rotate faster but flattening is det by random motion and not velocity
+small rotation velocities -> time to flatten is very large -> why smooth?(not enough time)
+
+orbital energy to heating
+
+more particles with Ebind>0 than in 1:1 -> more escaping
+
+v<<sigma in ellipticasl contrary to disk galaxies
+
+v/sigma <1 (in elliptical)
+v/ sigma and AM higher in major mergers
+
+bigger systems bigger values of n in sersic law
 
 
+xvp-asc solo soporta filename length menor o igual 40 (he cambiado pero no funciona)
 
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.2]{rotc265-0-60-1-all.png}
- \caption{\emph{rotc 0 60 1 para modelo 265 entero, solo bulbo, solo halo}}
- \label{Fig: 5}
-\end{figure}
-
-En el caso de las fusiones de elipticas de masa diferente las conchas formadas por las particulas(estrellas) del modelo(galaxia) de menor masa son mas visibles. Se pueden ver en el grafico de la velocidad de rotación en función del radius
-
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.2]{shell.png}
- \caption{\emph{velR para modelo 77, 100, 150, 250}}
- \label{Fig: 5}
-\end{figure}
-
-\section*{Comparacion}
-
-Comparacion entre las situaciones: de izq a derecha:
-los 2 con halo, los 2 sin halo, el primero(masa mayor) sin halo y el segundo sin halo, el primero sin halo y el segundo con halo, los 2 con halo en una órbita elíptica (las 4 anteriores se hicieron con orbita parabolica).
-El dt en TREEPAR es diferente para la situación los 2 sin halo, pero para las demás se dejó igual que en el caso las 2 con halo
-
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.1]{am.png}
- \caption{\emph{Momento angular}}
- \label{Fig: 5}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.1]{en.png}
- \caption{\emph{Energia}}
- \label{Fig: 5}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.1]{cmdif.png}
- \caption{\emph{Distancia entre los centros de los 2 objetos}}
- \label{Fig: 5}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.1]{vr.png}
- \caption{\emph{mean vr}}
- \label{Fig: 5}
-\end{figure}
-
-\begin{figure}[h!]
- \centering
- \includegraphics[scale=0.1]{vt.png}
- \caption{\emph{mean vt}}
- \label{Fig: 5}
-\end{figure}
-
-La simulación no ha acabado. La fusión acaba después de varios encuentros(aqui es solo 1). Hay todavía particulas que se escapan.
+http://ned.ipac.caltech.edu/level5/Sept04/Gerhard/Gerhard3.html
 
 
-\section*{Issues}
-\begin{itemize}
-\item xvp-asc solo soporta filename length menor o igual 40 (he cambiado pero no funciona)
-\item Como puedo reemplazar un modelo de un fichero con otro de otro fichero?(en el caso anterior con halo, modelo 3 salió mal por la primera vez)
-\end{itemize}
+elliptical: lack of gas
+mass : rotate faster? vr, vr?
 
-
-
+mayor velocidad <-> mayor dispersion de velocidad
+mayor masa -> mayor acc(fuerza grav) -> mayor velocidad (a radios donde no se observa la masa luminosa)-> mayor velocidad -> faster merge
+del T virial (2Ec + Ep = 0)
+dispersion de velocidad calculada de la anchura de las linea espectrales 
+mayor velocidad -> explicada  si no hubiera masa la velocidad tendría que caer -> materia oscura 
 
 
 
