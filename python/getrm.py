@@ -1,7 +1,7 @@
 import pexpect,re,os
 import os.path
 from common import createFolder
-from const import outFolderName, modelname, numModels, modelFolderName, noraFolderName
+from const2 import outFolderName, modelname, numModels, modelFolderName, noraFolderName
 
 
 RM = 1000
@@ -64,6 +64,9 @@ for i in range(1,numModels + 1):
 	print("*****************i=%d" %i)
 	child.sendline("getmodel %d" % i)
 	child.expect("getmodel>>.+nora>>")
+	
+	child.sendline("bodsrange 1 10000")
+	child.expect ('nora>>')
 	child.sendline("Rm %d"%RM)
 	child.expect ('nora>>')
 	getRad(child.before)

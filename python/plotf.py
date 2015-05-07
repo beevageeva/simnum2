@@ -6,9 +6,9 @@ import os.path
 import sys
 
 #outFolder = "outCONHALO_0" 
-outFolder = "outCONHALO_1" 
+outFolder = "/scratch/cglez/PRACTICAS/PRACTICA1/PRU_E/STAB/OUTRM_1/" 
 
-files = ["0.01", "0.50", "0.80", "0.99"]
+files = ["0.01", "0.20" , "0.50", "0.80", "0.99"]
 
 
 for f in files:
@@ -17,6 +17,7 @@ for f in files:
 
 plt.xlabel("modelNumber")
 plt.ylabel("radius")
+plt.xlim(1,41)
 
 
 plt.get_current_fig_manager().window.wm_geometry("1000x900+50+50")
