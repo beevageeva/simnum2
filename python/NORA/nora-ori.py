@@ -36,13 +36,14 @@ from math import fabs
 
 
 class AboutBox(wx.Dialog):
-		def __init__(self):
+		def __init__(self, isochrones):
 				wx.Dialog.__init__(self, None, -1, "About <<project>>",
 						style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME|wx.RESIZE_BORDER|
 								wx.TAB_TRAVERSAL)
 				hwin = wx.html.HtmlWindow(self, -1, size=(400,200))
 				vers = {}
 				aboutText = """<p>Total age(Gy): %(totalAge)s </p>
+				<p>isochrones: %(isos)s </p>
 
 				<p>SFR(gy): %(sfr)s </p>
 				<p>Metalicity(gy): %(isochrones)s </p>
@@ -51,6 +52,56 @@ class AboutBox(wx.Dialog):
 				vers["python"] = sys.version.split()[0]
 				vers["wxpy"] = wx.VERSION_STRING
 				vers["isochrones"] = vers["isos"] = "<ul>"
+				totalage = 0
+
+				for isoname in isochrones.keys():
+					if isochrones[isoname]["visible"] and  len(isochrones[isoname]["toPlot"])>0:
+						vers["isos"] += "<li>" + isoname + ":{"  + ",".join(["%5.2f" % i for i in  sorted(isochrones[isoname]["toPlot"])] ) + "}</li>"
+						isomax = max(isochrones[isoname]["toPlot"])
+						if isomax > totalage:
+							totalage = isomax
+				vers["isos"]+="</ul>"
+				totalage = 10 ** (totalage - 9)
+				vers["totalAge"] = "%5.2f" % totalage		
+				vers["sfr"] = ""
+				#TODO not hardcode the values
+				startx=endx=None
+				for x in np.arange(10.25,7.75,-0.05):
+					x=round(float(x),2)
+					found = False
+					for isoname in isochrones.keys():
+						if isochrones[isoname]["visible"] and  (x in isochrones[isoname]["toPlot"]):
+							found = True
+							startx=x
+							if endx is None:
+								endx = x
+					if not found:
+						if not endx is None :
+							vers["sfr"] +=" [" + "%5.2f" % (totalage - 10 ** (endx-9))   + ", " + "%5.2f" % (totalage - 10 ** (startx-9))  + "] "
+							endx = None
+				if not endx is None :
+					vers["sfr"] +=" [" + "%5.2f" % (totalage - 10 ** (endx-9))   + ", " + "%5.2f" % (totalage - 10 ** (startx-9))  + "] "
+					
+
+						
+				for isoname in isochrones.keys():
+					if isochrones[isoname]["visible"] and  len(isochrones[isoname]["toPlot"])>0:
+						vers["isochrones"] += "<li>" + isoname + ":{" 
+						startx=oldx=None
+						for x in sorted(isochrones[isoname]["toPlot"], reverse = True ):
+							if startx is None:
+								startx = x
+							else:
+								if (not oldx is None) and  (x<oldx-0.05):
+									vers["isochrones"] +=" [" + "%5.2f" % (totalage - 10 ** (startx-9))   + ", " + "%5.2f" % (totalage - 10 ** (oldx-9))  + "] "
+									startx = x		
+						
+							oldx=x
+							
+						vers["isochrones"] +=" [" + "%5.2f" % (totalage - 10 ** (startx-9))   + ", " + "%5.2f" % (totalage - 10 ** (oldx-9))  + "] "
+						vers["isochrones"] += "}</li>"
+						#vers["isochrones"] += "<li>" + isoname + ":{" +  ",".join([ "%5.2f" % (totalage - 10 ** (x-9)) for x in sorted(isochrones[isoname]["toPlot"], reverse = True )]) + "}" + "</li>"
+				vers["isochrones"] += "</ul>"
 
 				hwin.SetPage(aboutText % vers)
 				btn = hwin.FindWindowById(wx.ID_OK)
@@ -75,13 +126,6 @@ def floatRgb(mag, cmin, cmax):
 	red  = min((max((4*(x-0.25), 0.)), 1.))
 	green= min((max((4*fabs(x-0.5)-1., 0.)), 1.))
 	return "#%02x%02x%02x" % (red*255, green*255, blue*255)
-
-
-def line_picker2(line, mouseevent):
-	print(line)
-	print(dir(line))
-	return False
-	
 
 def line_picker(line, mouseevent):
     """
@@ -120,41 +164,115 @@ class IsoageCheckbox(wx.CheckBox):
 		#print "value " + str(self.GetValue())
 		self.parentFrame.checkIsoAge(self.isoname, self.age, self.GetValue())
 
+class ListIsoAges(wx.Dialog):
+
+	def __init__(self, isoname, parentFrame):
+		#wx.Dialog.__init__(self, None, -1, "Ages for " + isoname,(600,600),style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME|wx.RESIZE_BORDER|wx.TAB_TRAVERSAL)
+		wx.Dialog.__init__(self, None, -1, "Ages for " + isoname,style=wx.DEFAULT_DIALOG_STYLE)
+		self.SetSize((600,600))
+		#self.sizer = wx.BoxSizer(wx.VERTICAL)
+		self.sizer = wx.GridSizer(rows=4, cols=4, hgap=5, vgap=5)
+		isohash = parentFrame.isochrones[isoname]
+		dataiso = np.genfromtxt(isohash['filename'], comments="#", usecols=(0), converters={0: lambda x: round(float(x),2)})
+		for age in np.unique(dataiso):
+			#print "age = " + str(age)
+			isopanel = wx.Panel(self)
+			hbox1 = wx.BoxSizer(wx.HORIZONTAL)        
+			hbox1.Add(IsoageCheckbox(isopanel, age ,isoname, parentFrame))
+			isopanel.SetSizer(hbox1)
+			self.sizer.Add(isopanel, 0, wx.ALL, 10)
+		okbtn = wx.Button(self, 1, 'Ok', (90, 185), (60, -1))
+		self.sizer.Add(okbtn)
+		self.Bind(wx.EVT_BUTTON, self.OnClose, okbtn)
+		self.SetSizer(self.sizer)
+
+	def OnClose(self,event):
+		self.Destroy()
 		
 
 
 
+class ListIsochronesBox(wx.Dialog):
+
+	class IsoButton(wx.Button):
+		def __init__(self, parent, isoname, parentFrame):
+			wx.Button.__init__(self, parent, -1,"Ages", (500,500))
+			self.Bind(wx.EVT_BUTTON, self.listAges)
+			self.isoname = isoname
+			self.parentFrame = parentFrame
+	
+		def listAges(self,event):
+			#print "list ages for " + str(self.isoname)
+			dlg = ListIsoAges(self.isoname, self.parentFrame)
+			dlg.ShowModal()
+			dlg.Destroy()
+	
+	#TODO I do not know HOW to get the label of the checkbox -- THIS is why I make a new class to be able to reference isohash
+	class IsoCheckbox(wx.CheckBox):
+		def __init__(self, parent, isoname, parentFrame):
+			wx.CheckBox.__init__(self, parent, -1, isoname)
+			self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+			self.isoname = isoname
+			self.parentFrame = parentFrame
+			self.SetValue(parentFrame.isochrones[isoname]['visible'])
+	
+		def OnCheck(self,event):
+				self.parentFrame.setIsoVisible(self.isoname, self.GetValue())
+
+
+	def __init__(self, parentFrame):
+		wx.Dialog.__init__(self, None, -1, "Isocronas",style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME|wx.RESIZE_BORDER|wx.TAB_TRAVERSAL|wx.CLOSE_BOX)
+		self.CentreOnParent(wx.BOTH)
+		self.SetFocus()
+		self.sizer = wx.GridSizer(rows=4, cols=2, hgap=5, vgap=5)
+		#self.sizer = wx.BoxSizer(wx.VERTICAL)
+		self.parentFrame = parentFrame
+		for isoname in parentFrame.isochrones.keys():	
+			isopanel = wx.Panel(self)
+			hbox1 = wx.BoxSizer(wx.HORIZONTAL)        
+			hbox1.Add(ListIsochronesBox.IsoCheckbox(isopanel, isoname, parentFrame))
+			hbox1.Add(ListIsochronesBox.IsoButton(isopanel,isoname , parentFrame), flag=wx.LEFT, border=5)
+			isopanel.SetSizer(hbox1)
+			self.sizer.Add(isopanel, 0, wx.ALL, 10)
+		okbtn = wx.Button(self, 1, 'Ok', (90, 185), (60, -1))
+		self.sizer.Add(okbtn)
+		self.Bind(wx.EVT_BUTTON, self.OnClose, okbtn)
+		self.SetSizer(self.sizer)
+
+	def OnClose(self,event):
+		self.Destroy()
+
 
 
 class PickDialog(wx.Panel):
-	class RangeCheckbox(wx.CheckBox):
-		def __init__(self, parent, rangeValue, parentFrame):
-			wx.CheckBox.__init__(self, parent, -1, str(rangeValue))
-			self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
-			self.rangeValue = rangeValue
-			self.parentFrame = parentFrame
-			self.SetValue(parentFrame.ranges[rangeValue])
-	
-		def OnCheck(self,event):
-				self.parentFrame.ranges[self.rangeValue] = not self.parentFrame.ranges[self.rangeValue]
-				self.parentFrame.plotMyData()
 
 	def __init__(self,parentPanel,  parentFrame):
 		wx.Panel.__init__(self, parentPanel)
 		self.SetSize((600,600))
-			 
+		self.parentFrame = parentFrame
 		self.sizer = wx.BoxSizer(wx.VERTICAL)
-		self.sizer.Add(wx.StaticText(self, -1, "Groups of particles"))
-		for item in sorted(parentFrame.ranges.items()):
-			self.sizer.Add(PickDialog.RangeCheckbox(self, item[0], parentFrame ))
+		self.sizer.Add(wx.StaticText(self, -1, "Picked lines"))
+		okbtn = wx.Button(self, 1, 'Clear')
+		self.sizer.Add(okbtn)
+		self.Bind(wx.EVT_BUTTON, self.OnClear, okbtn)
 		self.SetSizer(self.sizer)
+		self.parentPanel = parentPanel
 		print("  ---- end " +  str(self.GetSize()))
 
+	def addIsoage(self, isoname, age):
+		isohash = self.parentFrame.isochrones[isoname]
+
+		isopanel = wx.Panel(self)
+		hbox = wx.BoxSizer(wx.HORIZONTAL)        
+		hbox.Add(wx.StaticText(isopanel,-1, label=isoname))
+		hbox.Add(IsoageCheckbox(isopanel, age ,isoname, self.parentFrame))
+		isopanel.SetSizer(hbox)
+		self.sizer.Add(isopanel, 0, wx.ALL, 10)
 
 
 		#repaint
-		parentPanel.Layout()
-		parentPanel.Fit()
+		self.parentPanel.Layout()
+		self.parentPanel.Fit()
 		self.sizer.Layout()
 		self.Fit()
 		self.Show(True)	
@@ -165,31 +283,16 @@ class PickDialog(wx.Panel):
 				child.Destroy() 
 
 
-from matplotlib.patches import FancyArrowPatch
-from mpl_toolkits.mplot3d import proj3d
-
-class Arrow3D(FancyArrowPatch):
-	def __init__(self, xs, ys, zs, *args, **kwargs):
-		FancyArrowPatch.__init__(self, (0,0), (0,0), *args, **kwargs)
-		self._verts3d = xs, ys, zs
-
-	def draw(self, renderer):
-		xs3d, ys3d, zs3d = self._verts3d
-		xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, renderer.M)
-		self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
-		FancyArrowPatch.draw(self, renderer)
 
 class CanvasFrame(wx.Frame):
 
-
-
-
-		def __init__(self, data, numpart, ranges):
+		def __init__(self, mydatafile):
 			
-				self.vector = None
-				self.data = data 	
-				self.numpart = numpart
-				self.ranges = ranges 	
+				self.isochrones = {}
+				self.isolinestyle="-"
+				self.minIniMass=0.7		
+
+				self.mydatafile = mydatafile 	
 				wx.Frame.__init__(self,None,-1,
 												 'CanvasFrame')
 				self.SetBackgroundColour(wx.NamedColour("WHITE"))
@@ -203,16 +306,16 @@ class CanvasFrame(wx.Frame):
 
 				menu = wx.Menu()
 				m_iso = menu.Append(-1, "New", "New Isochrone File")
-				#self.Bind(wx.EVT_MENU, self.newIsochroneFile, m_iso)
+				self.Bind(wx.EVT_MENU, self.newIsochroneFile, m_iso)
 				m_liso = menu.Append(-1, "List", "List Isochrone Files")
-				#self.Bind(wx.EVT_MENU, self.listIsochroneFiles, m_liso)
+				self.Bind(wx.EVT_MENU, self.listIsochroneFiles, m_liso)
 				self.m_line = menu.Append(-1, "Line style -", "Line style", kind=wx.ITEM_CHECK)
 				self.m_line.Check()
-				#self.Bind(wx.EVT_MENU, self.changeIsolinestyle, self.m_line)
+				self.Bind(wx.EVT_MENU, self.changeIsolinestyle, self.m_line)
 				self.m_legend = menu.Append(-1, "Show Legend", "Legend", kind=wx.ITEM_CHECK)
 				self.Bind(wx.EVT_MENU, self.changeLegendVisible, self.m_legend)
 				m_inimass = menu.Append(-1, "Masa inicial minima", "Masa inicial minima")
-				#self.Bind(wx.EVT_MENU, self.changeMinIniMass, m_inimass)
+				self.Bind(wx.EVT_MENU, self.changeMinIniMass, m_inimass)
 				menuBar.Append(menu, "&Isocrone files")
 			
 				menu = wx.Menu()
@@ -221,7 +324,7 @@ class CanvasFrame(wx.Frame):
 				m_clear = menu.Append(-1, "&Clear plot", "Clear")
 				self.Bind(wx.EVT_MENU, self.OnClear, m_clear)
 				m_replot = menu.Append(-1, "&Replot", "Replot")
-				#self.Bind(wx.EVT_MENU, lambda event: self.replotIsosVisible(), m_replot)
+				self.Bind(wx.EVT_MENU, lambda event: self.replotIsosVisible(), m_replot)
 				menuBar.Append(menu, "&Help")
 
 				self.SetMenuBar(menuBar)
@@ -299,20 +402,17 @@ class CanvasFrame(wx.Frame):
 		def onpick2(self,event):
 			thisline = event.artist
 			print("PICK")
+			print(thisline)
+			print(dir(thisline))
 			ind = event.ind[0]
-			print("vertss3d")
-			x,y,z=thisline._verts3d
-			print("%2.3f,%2.3f,%2.3f" % (x[ind],y[ind],z[ind]))
-			for i in range(self.numpart):
-				if self.data[i,0] == x[ind] and self.data[i,1] == y[ind] and self.data[i,2] == z[ind]:
-					print("Found index in data %d" % i)
-					print("velocity is vx=%e,vy=%e,vz=%e" % (self.data[self.numpart+i,0], self.data[self.numpart+i,1], self.data[self.numpart+i,2]))
-					if not self.vector is None:
-						self.vector.remove()
-					self.vector = Arrow3D([x[ind],x[ind] +10* self.data[self.numpart+i,0]],[y[ind],y[ind]+10* self.data[self.numpart+i,1]],[z[ind],z[ind]+10*self.data[self.numpart+i,2]], mutation_scale=20, lw=1, arrowstyle="-|>", color="r")
-					self.axes.add_artist(self.vector)
-					self.repaint()
-					break	
+			ff = thisline.get_data()
+			print ff
+			x = thisline.get_xdata()[ind]
+			y = thisline.get_ydata()[ind]
+			z = thisline.get_zorder()
+			print(x)
+			print(y)
+			print(z)
 			#z = thisline.get_zdata()[ind]
 			#print x, y, z
 		
@@ -321,6 +421,60 @@ class CanvasFrame(wx.Frame):
 		#def OnSize(self, event):
 		#	self.scrolling.SetSize(self.GetClientSize())
 
+		def changeMinIniMass(self, event):
+			ma = ['0.0','0.7', '0.75', '0.8', '0.85', '0.9', '1', '1.05', '1.1', '1.15', '1.2', '1.25', '1.3']
+			dlg = wx.SingleChoiceDialog(self, 'Masa inicial minima', 'Which one?', ma, wx.CHOICEDLG_STYLE)
+			#print "INI MASS =>" + str(self.minIniMass)	+ "<"
+			#print "INI MAASS INDEX = " + str(ma.index(str(self.minIniMass)))	
+			dlg.SetSelection(ma.index(str(self.minIniMass)))
+			if dlg.ShowModal() == wx.ID_OK:
+				self.minIniMass = float(dlg.GetStringSelection())
+				self.replotIsosVisible()
+			dlg.Destroy()	
+
+
+		def newIsochroneFile(self,event):
+			openFileDialog = wx.FileDialog(self, "Open iso  file", "", "","DAT files (*.dat)|*.dat", wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+			if openFileDialog.ShowModal() == wx.ID_CANCEL:
+				#cancelled
+				return     
+			# proceed loading the file chosen by the user
+			# this can be done with e.g. wxPython input streams:
+			addIsochroneFile(openFileDialog.GetPath())
+
+		def addIsochroneFile(self,filename):
+			isoname = os.path.basename(filename)[:-4]	
+			newiso = {'filename':filename, 'plotted':{}, 'visible' : True, 'toPlot':[]}
+			self.isochrones[isoname] = newiso
+			print("OPENED'%s'."%filename)
+
+
+		#dataiso is supposed to have 4 cols
+		def plotDataiso(self,dataiso,age):
+			dataiso=dataiso[dataiso[:,2]==age]
+ 		  #in dhr7.dat seems that there are no values for mass < 0.7
+			if(self.minIniMass > 0):
+				dataiso=dataiso[dataiso[:,3]>self.minIniMass]
+			#delete age and masainicial columns
+			dataiso = np.delete(dataiso,(2,3),axis=1)
+			dataiso[:,0] = dataiso[:,0] - dataiso[:,1]
+			colorstring =  floatRgb(age, 7.8, 10.25)
+			line, = self.axes.plot(dataiso[:,0],dataiso[:,1], "o" , markersize=1, color=colorstring ,  markeredgecolor='none' , label= "%5.2f" %  (10.0 ** (age - 9)) + " GY", picker=line_picker)
+			line.set_linestyle(self.isolinestyle)
+			return line
+
+		def changeIsolinestyle(self, event):
+			if(self.m_line.IsChecked()):
+				self.isolinestyle = "-"
+			else:
+				self.isolinestyle = ""
+			#change existing ISOCHRONE lines linestyle 
+			for isoname in self.isochrones.keys():	
+				isohash = self.isochrones[isoname]
+				for age in  isohash["plotted"]:
+					isohash["plotted"][age].set_linestyle(self.isolinestyle)
+			#REFRESH
+			self.repaint()
 
 		def changeLegendVisible(self, event):
 			if(not self.m_legend.IsChecked()):
@@ -405,7 +559,7 @@ class CanvasFrame(wx.Frame):
 						self.Destroy()
 
 		def OnAbout(self, event):
-				dlg = AboutBox()
+				dlg = AboutBox(self.isochrones)
 				dlg.ShowModal()
 				dlg.Destroy()
 
@@ -419,25 +573,23 @@ class CanvasFrame(wx.Frame):
 			self.repaint()
 			
 		def plotMyData(self):
-			print(self.data.shape)
-			self.axes.cla()
-			self.vector = None
-			lastindex = 0
-			indices = []
-			for item in sorted(self.ranges.items()):
-				if(item[1]):
-					indices+=range(lastindex, item[0])
-				lastindex = item[0]
-					
-			velInd = np.array(indices) + self.numpart
+			import re
+			with open(self.mydatafile, 'r') as f:
+				first_line = f.readline()
+			rexpr = re.compile("\s*([\d.E\+-]+)(?:\s+[\d.E\+-]+)+\s*")
+			g = rexpr.match(first_line)
+			
+			numpart = int(float((g.group(1))))
+			data = np.loadtxt(self.mydatafile, skiprows=1+numpart)
+			print(data.shape)
+			
 
-			self.axes.plot(self.data[indices,0] ,  self.data[indices,1], self.data[indices,2], "ko", markersize=1, picker=1)
-			#self.axes.quiver3d(self.data[indices,0] ,  self.data[indices,1], self.data[indices,2], self.data[velInd,0] , self.data[velInd,1], self.data[velInd,2])
+			self.axes.plot(data[numpart:,0] ,  data[numpart:,1], data[numpart:,2], "ko", markersize=1, picker=1)
 			#self.axes.plot(mydata[:,0],mydata[:,1], "ro", markeredgecolor='none', color="#000000" , markersize=1)
 			self.axes.set_xlabel('x')
 			self.axes.set_ylabel('y')
-			self.axes.set_zlabel('z')
-			self.repaint()	
+			self.axes.set_ylabel('z')
+	
 
 class App(wx.App):
 
@@ -445,26 +597,7 @@ class App(wx.App):
 				'Create the main window and insert the custom frame'
 				argv = sys.argv[1:]
 				mydatafile="two.xvp.txt"
-				import re
-				with open(mydatafile, 'r') as f:
-					first_line = f.readline()
-				
-				header = re.split('\s+', first_line)
-				print("header")
-				print(len(header))	
-				print(header[1])
-				print(header[101])
-				print(header[102])
-				numpart = int(float(header[1]))
-				numRanges = int(float(header[101]))
-				ranges = {}
-				for i in range(numRanges):
-					ranges[int(float(header[102+2*i]))] =  True
-
-				print(numpart)
-				print(ranges)
-				data = np.loadtxt(mydatafile, skiprows=1+numpart)
-				frame = CanvasFrame(data, numpart, ranges)
+				frame = CanvasFrame(mydatafile)
 				frame.Show(True)
 
 				return True
