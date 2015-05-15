@@ -63,18 +63,38 @@ class AboutBox(wx.Dialog):
 
 
 class PickDialog(wx.Panel):
-	class RangeCheckbox(wx.CheckBox):
+	class RangeCheckbox(wx.Panel):
+	
 		def __init__(self, parent, rangeValue, parentFrame):
-			wx.CheckBox.__init__(self, parent, -1, str(rangeValue))
-			self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+
+			wx.Panel.__init__(self, parent, -1)
+
+			sizer = wx.BoxSizer(wx.HORIZONTAL)
+			check = wx.CheckBox(self, -1, str(rangeValue))
+			check.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+			self.cb = wx.ComboBox(self,size=(100,20), choices=["1","2"])
+			self.cb.SetValue("1")
+			#self.cb.Append("Undefined", 0)
+			#self.cb.Append("Object 1", 1)
+			#self.cb.Append("Object 2", 2)
+			self.cb.Bind(wx.EVT_COMBOBOX, self.onSelect)
+			sizer.Add(check)
+			sizer.Add(self.cb)
+			self.SetSizer(sizer)
 			self.rangeValue = rangeValue
 			self.parentFrame = parentFrame
-			self.SetValue(parentFrame.ranges[rangeValue])
+			check.SetValue(parentFrame.ranges[rangeValue][0])
 	
 		def OnCheck(self,event):
-				self.parentFrame.ranges[self.rangeValue] = not self.parentFrame.ranges[self.rangeValue]
+				self.parentFrame.ranges[self.rangeValue][0] = not self.parentFrame.ranges[self.rangeValue][0]
 				self.parentFrame.plotMyData()
 				self.parentFrame.repaint()	
+
+		def onSelect(self, event):
+			print(self.cb.GetClientData(self.cb.GetSelection()))
+			print("GET VALUE %s" % self.cb.GetValue())
+			self.parentFrame.ranges[self.rangeValue][1] = int(self.cb.GetValue())
+
 
 	def __init__(self,parentPanel,  parentFrame):
 		wx.Panel.__init__(self, parentPanel)
@@ -174,7 +194,7 @@ class CanvasFrame(wx.Frame):
 				numRanges = int(float(header[101]))
 				self.ranges = {}
 				for i in range(numRanges):
-					self.ranges[int(float(header[102+2*i]))] =  True
+					self.ranges[int(float(header[102+2*i]))] =  [True, 1,float(header[102+2*i+1]) ]
 
 				print(self.numpart)
 				print(self.ranges)
@@ -188,6 +208,10 @@ class CanvasFrame(wx.Frame):
 
 				menuBar = wx.MenuBar()
 				menu = wx.Menu()
+
+				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
+				self.Bind(wx.EVT_MENU, self.OnShowObjects, m_showObjects)
+
 				m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
 				self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
 				menuBar.Append(menu, "&File")
@@ -289,10 +313,62 @@ class CanvasFrame(wx.Frame):
 			self.currentModelNumberIndex = len(self.modelNumbers)-1
 			self.reloadModel()
 
+		def OnShowObjects(self, event):
+			lastindex = 0	
+			indices1 = []
+			indices2 = []
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][1] == 1 and item[1][0] ):
+					indices1+=range(lastindex, item[0])
+				elif(item[1][1] == 2 and item[1][0]):
+					indices2+=range(lastindex, item[0])
+				lastindex = item[0]	
+			if len(indices1)==0 or len(indices2)==0:
+				return
+			xcenter1 = np.mean(self.data[indices1,0])
+			ycenter1 = np.mean(self.data[indices1,1])
+			zcenter1 = np.mean(self.data[indices1,2])
+			xcenter2 = np.mean(self.data[indices2,0])
+			ycenter2 = np.mean(self.data[indices2,1])
+			zcenter2 = np.mean(self.data[indices2,2])
+			print("Center distance is %e" % ((xcenter1-xcenter2)**2 + (ycenter1-ycenter2)**2 + (zcenter1-zcenter2)**2)**0.5  )
+			if not self.vector is None:
+				self.vector.remove()
+			self.vector = Arrow3D([xcenter1,xcenter2],[ycenter1,ycenter2],[zcenter1, zcenter2], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
+			self.axes.add_artist(self.vector)
+			self.repaint()
+	
+			
+		#TODO center of mass distance
+		def OnShowObjects2(self, event):
+			lastindex = 0	
+			indices1 = []
+			indices2 = []
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][1] == 1 and item[1][0] ):
+					indices1+=range(lastindex, item[0])
+				elif(item[1][1] == 2 and item[1][0]):
+					indices2+=range(lastindex, item[0])
+				lastindex = item[0]	
+			if len(indices1)==0 or len(indices2)==0:
+				return
+			xcenter1 = np.mean(self.data[indices1,0])
+			ycenter1 = np.mean(self.data[indices1,1])
+			zcenter1 = np.mean(self.data[indices1,2])
+			xcenter2 = np.mean(self.data[indices2,0])
+			ycenter2 = np.mean(self.data[indices2,1])
+			zcenter2 = np.mean(self.data[indices2,2])
+			print("Center distance is %e" % ((xcenter1-xcenter2)**2 + (ycenter1-ycenter2)**2 + (zcenter1-zcenter2)**2)**0.5  )
+			if not self.vector is None:
+				self.vector.remove()
+			self.vector = Arrow3D([xcenter1,xcenter2],[ycenter1,ycenter2],[zcenter1, zcenter2], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
+			self.axes.add_artist(self.vector)
+			self.repaint()
 
 
 	
-		
 		def onpick2(self,event):
 			thisline = event.artist
 			print("PICK")
@@ -319,13 +395,6 @@ class CanvasFrame(wx.Frame):
 		#	self.scrolling.SetSize(self.GetClientSize())
 
 
-		def changeLegendVisible(self, event):
-			if(not self.m_legend.IsChecked()):
-				self.axes.legend_ = None
-			else:
-				self.axes.legend().draggable()
-			#NO REPAINT only needs canvas.draw, not to redraw legend
-			self.canvas.draw()
 		
 
 		def OnPaint(self, event):
@@ -369,7 +438,7 @@ class CanvasFrame(wx.Frame):
 			lastindex = 0
 			indices = []
 			for item in sorted(self.ranges.items()):
-				if(item[1]):
+				if(item[1][0]):
 					indices+=range(lastindex, item[0])
 				lastindex = item[0]
 					
