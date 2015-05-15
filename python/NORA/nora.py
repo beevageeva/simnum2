@@ -214,6 +214,10 @@ class CanvasFrame(wx.Frame):
 
 				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
 				self.Bind(wx.EVT_MENU, self.OnAngMom1, m_showObjects)
+				m_showObjects = menu.Append(-1, "Angular moment 2", "Angular moment 2")
+				self.Bind(wx.EVT_MENU, self.OnAngMom2, m_showObjects)
+				m_showObjects = menu.Append(-1, "Total Angular moment", "Total Angular moment ")
+				self.Bind(wx.EVT_MENU, self.OnAngMomTotal, m_showObjects)
 
 				m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
 				self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
@@ -342,11 +346,21 @@ class CanvasFrame(wx.Frame):
 				lastindex = item[0]
 			return indices1, indices2
 
+		def  selectObjectsAll(self):
+			lastindex = 0	
+			indices1 = []
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][0]):
+					indices1+=range(lastindex, item[0])
+				lastindex = item[0]
+			return indices1
 
-		def getCenter(self, objNumber):
-			indices1  = self.selectObject(objNumber)	
+
+		def getCenter(self, indices1):
+			#TODO needed?
 			if len(indices1)==0 :
-				return
+				return [0,0,0]
 			xcenter = np.mean(self.data[indices1,0])
 			ycenter = np.mean(self.data[indices1,1])
 			zcenter = np.mean(self.data[indices1,2])
@@ -355,7 +369,7 @@ class CanvasFrame(wx.Frame):
 		def  angMom(self, objNumber):
 			lastindex = 0
 			am = np.zeros(3)		
-			center = self.getCenter(objNumber)
+			center = self.getCenter(self.selectObject(objNumber))
 			
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
@@ -368,11 +382,28 @@ class CanvasFrame(wx.Frame):
 				lastindex = item[0]
 			return am
 		
+		def  angMomTotal(self):
+			lastindex = 0
+			am = np.zeros(3)		
+			center = self.getCenter(self.selectObjectsAll())
+			
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][0] ):
+					massPart = item[1][2]	
+					indices =np.arange(lastindex, item[0])
+					am+=massPart * np.cross(self.data[indices] - center, self.data[indices + self.numpart]).sum(axis=0)
+				lastindex = item[0]
+			return am
 
 		def OnAngMom1(self, event):
 			print self.angMom(1)
 
+		def OnAngMom2(self, event):
+			print self.angMom(2)
 
+		def OnAngMomTotal(self, event):
+			print self.angMomTotal()
 
 
 		def OnShowObjects(self, event):
