@@ -86,14 +86,14 @@ class PickDialog(wx.Panel):
 			check.SetValue(parentFrame.ranges[rangeValue][0])
 	
 		def OnCheck(self,event):
-				self.parentFrame.ranges[self.rangeValue][0] = not self.parentFrame.ranges[self.rangeValue][0]
-				self.parentFrame.plotMyData()
-				self.parentFrame.repaint()	
+			self.parentFrame.ranges[self.rangeValue][0] = not self.parentFrame.ranges[self.rangeValue][0]
+			self.parentFrame.plotMyData()
+			self.parentFrame.repaint()	
 
 		def onSelect(self, event):
-			#print(self.cb.GetClientData(self.cb.GetSelection()))
-			print("GET VALUE %s" % self.cb.GetValue())
 			self.parentFrame.ranges[self.rangeValue][1] = int(self.cb.GetValue())
+			self.parentFrame.plotMyData()
+			self.parentFrame.repaint()	
 
 
 	def __init__(self,parentPanel,  parentFrame):
@@ -319,6 +319,15 @@ class CanvasFrame(wx.Frame):
 			self.reloadModel()
 
 
+		def  selectObject(self, objNum):
+			lastindex = 0	
+			indices1 = []
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][1] == objNum and item[1][0] ):
+					indices1+=range(lastindex, item[0])
+				lastindex = item[0]
+			return indices1
 
 		def  selectObjects(self):
 			lastindex = 0	
@@ -334,20 +343,34 @@ class CanvasFrame(wx.Frame):
 			return indices1, indices2
 
 
-		def  selectObject(self, numberObj):
-			lastindex = 0	
-			indices1 = []
+		def getCenter(self, objNumber):
+			indices1  = self.selectObject(objNumber)	
+			if len(indices1)==0 :
+				return
+			xcenter = np.mean(self.data[indices1,0])
+			ycenter = np.mean(self.data[indices1,1])
+			zcenter = np.mean(self.data[indices1,2])
+			return [xcenter,ycenter,zcenter]	
+
+		def  angMom(self, objNumber):
+			lastindex = 0
+			am = np.zeros(3)		
+			center = self.getCenter(objNumber)
+			
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
-				if(item[1][1] == numberObj and item[1][0] ):
+				if(item[1][1] == objNumber and item[1][0] ):
 					massPart = item[1][2]	
-					indices1+=range(lastindex, item[0])
+					indices =np.arange(lastindex, item[0])
+					print("AM")
+					print(am.shape)
+					am+=massPart * np.cross(self.data[indices] - center, self.data[indices + self.numpart]).sum(axis=0)
 				lastindex = item[0]
-			return indices1
+			return am
 		
 
 		def OnAngMom1(self, event):
-			print "sdfgsd"
+			print self.angMom(1)
 
 
 
