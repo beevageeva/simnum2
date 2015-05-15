@@ -1,7 +1,7 @@
 import pexpect,re
 import os.path
 from math import sqrt
-from const import numModels, outFolderName, modelFolderName, noraFolderName, modelname
+from const2 import numModels, outFolderName, modelFolderName, noraFolderName, modelname
 from common import createFolder
 
 files = {}
@@ -9,8 +9,11 @@ files = {}
 outFolder = createFolder(outFolderName)
 
 
-lastNumberFirst = 50000
-lastNumberSecond = 100000
+firstNumberFirst = 1
+
+lastNumberFirst = 20000
+firstNumberSecond = 20001
+lastNumberSecond = 40000
 filename = "distances.txt"
 
 import time
@@ -69,7 +72,7 @@ try:
 		#print("--------------------------------00")
 		#print(child.after)
 		#print("--------------------------------000")
-		child.sendline("bodsrange 1 %d" % lastNumberFirst)
+		child.sendline("bodsrange %d %d" % (firstNumberFirst, lastNumberFirst))
 		child.expect (['nora>>',pexpect.EOF])  
 		#print("--------------------------------bodsrange")
 		#print(child.before)
@@ -85,7 +88,7 @@ try:
 		#print("--------------------------------2")
 		#print(child.after)
 		#print("--------------------------------3")
-		child.sendline("bodsrange  %d %d" % (lastNumberFirst+1, lastNumberSecond))
+		child.sendline("bodsrange  %d %d" % (firstNumberSecond, lastNumberSecond))
 		child.expect (['nora>>',pexpect.EOF])  
 		#print("--------------------------------0111")
 		#print(child.before)

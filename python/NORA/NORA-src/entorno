@@ -1,0 +1,14 @@
+# Hacer source de este fichero antes de compilar con pgplot, y ejecutar
+# el programa
+
+# Define PGPLOT environment for local installation
+#setenv PGPLOT_DIR  /net/achicoria/export/soft/linuxv7/pkg/pgplot/pgplot-5.2
+setenv PGPLOT_DIR  /net/sapo/scratch/cglez/PGPLOT/
+setenv PGPLOT_FONT ${PGPLOT_DIR}/grfont.dat
+setenv PGPLOT_DEV  /xwin
+
+# prepend new path for libraries in local pgplot installation
+setenv LD_LIBRARY_PATH ${PGPLOT_DIR}:${LD_LIBRARY_PATH}
+
+# prepend new path for local pgplot binaries
+setenv PATH ${PGPLOT_DIR}:${PATH}

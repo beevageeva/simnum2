@@ -1,0 +1,121 @@
+C     ****************************************************************
+      SUBROUTINE INTENS(NP1,NP2,Rmax)
+C     ****************************************************************
+      INCLUDE 'nora.def'
+      DIMENSION AI(3,3),BI(3,3),DA(3),DB(3),ZA(3,3),ZB(3,3),WK(10),M(3)
+      INTEGER LDA,LWORK,NMX
+      PARAMETER (NMX=3,LDA=NMX,LWORK=64*NMX)
+
+      INTEGER I,IFAIL,J,N
+      CHARACTER UPLO
+
+      DOUBLE PRECISION A(LDA,NMAX),W(NMAX),WORK(LWORK)
+C
+      EXTERNAL F02FAF, X04CAF
+C
+      DO 10 I=1,3
+      DO 10 J=1,3
+      AI(I,J)=0.0
+      BI(I,J)=0.0
+   10 CONTINUE
+C
+      DO 20 L=NP1,NP2
+      IF ((x(L)*x(L) + y(L)*y(L) + z(L)*z(L)) .GT. Rmax**2) GO TO 20
+C            AI:  MOMENT OF INERTIA TENSOR
+      AI(1,1) = AI(1,1) + (Y(L)**2 + Z(L)**2)*PMASS(L)
+      AI(2,2) = AI(2,2) + (X(L)**2 + Z(L)**2)*PMASS(L)
+      AI(3,3) = AI(3,3) + (X(L)**2 + Y(L)**2)*PMASS(L)
+      AI(1,2) = AI(1,2) - X(L)*Y(L)*PMASS(L)
+      AI(1,3) = AI(1,3) - X(L)*Z(L)*PMASS(L)
+      AI(2,3) = AI(2,3) - Y(L)*Z(L)*PMASS(L)
+C            BI:  KINETIC ENERGY TENSOR
+      BI(1,1) = BI(1,1) + VX(L)**2*PMASS(L)
+      BI(2,2) = BI(2,2) + VY(L)**2*PMASS(L)
+      BI(3,3) = BI(3,3) + VZ(L)**2*PMASS(L)
+      BI(1,2) = BI(1,2) + VX(L)*VY(L)*PMASS(L)
+      BI(1,3) = BI(1,3) + VX(L)*VZ(L)*PMASS(L)
+      BI(2,3) = BI(2,3) + VY(L)*VZ(L)*PMASS(L)
+   20 CONTINUE
+      AI(2,1)=AI(1,2)
+      AI(3,1)=AI(1,3)
+      AI(3,2)=AI(2,3)
+      BI(2,1)=BI(1,2)
+      BI(3,1)=BI(1,3)
+      BI(3,2)=BI(2,3)
+      DO 30 I=1,3
+      DO 30 J=1,3
+      BI(I,J)=0.5*BI(I,J)
+   30 CONTINUE
+      DO 11 I=1,3
+         DO 12 J=1,3
+            A(I,J)=AI(I,J)
+ 12      CONTINUE
+ 11   CONTINUE
+      UPLO='L'
+      IFAIL=0
+      N=3
+        IF (N.LE.NMAX) THEN
+           READ(NIN,*) UPLO
+           IF (UPLO.EQ.'U') THEN
+              READ (NIN,*) ((A(I,J),J=I,N),I=1,N)
+           ELSE IF (UPLO.EQ.'L') THEN
+              READ (NIN,*) ((A(I,J),J=1,I),I=1,N)
+           END IF   
+      
+C                   EIGENVALUES AND VECTORS OF INERTIA TENSOR
+      CALL F02FAF ('Vectors',UPLO,N,A,LDA,W,WORK,LWORK,IFAIL)
+C            EIGENVALUES AND VECTORS OF KINETIC ENERGY TENSOR
+C     CALL EIGRS (BI,3,12,DB,ZB,3,WK,IER)
+C
+      WRITE(6,2010)
+      WRITE(6,2011)
+      DO 50 K=1,3
+      WRITE(6,2012) AI(K,1),AI(K,2),AI(K,3),BI(K,1),BI(K,2),
+     1              BI(K,3),DB(K)
+   50 CONTINUE
+	   WRITE (6,*)
+           WRITE (6,*) 'Eigenvalues'
+           WRITE (6,99) (W(I), I=1,N)
+           WRITE (6,*)
+
+	CALL X04CAF('general',' ',N,N,A,LDA,'eigenvectors',IFAIL)
+c 
+      END IF
+ 99        FORMAT (3X,(8F8.4))	
+C
+C            SORT EIGENVALUES MOMENT OF INERTIA
+C            M(1)  IS INDEX SMALLEST MOMENT OF INERTIA
+C            I.E. M(1) CORRESPONDS TO LONGEST AXIS, ETC
+      M(1)=1
+      M(2)=2
+      M(3)=3
+C     IF (DA(2).LT.DA(1)) M(1)=2
+C     IF (DA(3).LT.DA(M(1))) M(1)=3
+C     IF (DA(2).GT.DA(3)) M(3)=2
+C     IF (DA(1).GT.DA(M(3))) M(3)=1
+C     M(2)=6-M(1)-M(3)
+C            AXIAL RATIOS
+C            EPS1 = B/A       EPS2 = C/A
+C     P=DA(M(1))/DA(M(2))
+C     Q=DA(M(1))/DA(M(3))
+C     EPS1=(-P*Q-P+Q)/(P*Q-P-Q)
+C     EPS2=(-P*Q+P-Q)/(P*Q-P-Q)
+C     IF (EPS1.LT.0.0) EPS1=0.0
+C     IF (EPS2.LT.0.0) EPS2=0.0
+C     EPS1=SQRT(EPS1)
+C     EPS2=SQRT(EPS2)
+C
+C            VELOCITY ANISOTROPY PARAMETER
+C     DEK=1.0-2.0*DB(M(3))/(DB(M(1))+DB(M(2)))
+C
+C     WRITE(6,2020) EPS1,EPS2,DEK,RCUT
+ 2000 FORMAT(1H0)
+ 2010 FORMAT(1H0,21X,'MOMENT OF INERTIA',30X,'KINETIC ENERGY')
+ 2011 FORMAT(1H ,15X,'MATRIX',15X,'EIG VALUES',24X,'MATRIX',
+     1           15X,'EIG VALUES')
+ 2012 FORMAT(1H ,2(3F10.4,5X,F10.4,10X))
+C2020 FORMAT(1H0,'AXIAL RATIOS:',5X,'B/A',F8.3,5X,'C/A',F8.3,5X,
+C    1           'ANISOTROPY:   EKIN',F12.3,5X,'RADIUS',F8.3)
+C
+      RETURN
+      END

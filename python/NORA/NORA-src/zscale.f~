@@ -1,0 +1,71 @@
+C************************************************************************
+ 
+                SUBROUTINE zscale(gdev,coordmax,istart,iend)
+
+C************************************************************************
+ 
+	IMPLICIT NONE
+	INCLUDE 'nora.def'
+        INTEGER nbin, uout
+        INTEGER istart,iend
+        PARAMETER (nbin=40, uout=18)
+        INTEGER n,l,k
+        REAL Rmax,zmod,coordmax,rmod
+c        PARAMETER (Rmax=20)
+        REAL facd,facu,zmeana(nbin),zmean(nbin),znum(nbin)
+        INTEGER zbin(nbin),ztot
+        CHARACTER*(*) gdev
+
+
+        
+C--------------
+c     Read particle's z component and bin it
+C--------------
+
+        Rmax=coordmax
+
+        do 30 n=1,nbin
+           zbin(n)=0
+           znum(n)=0.
+           zmeana(n)=0.
+ 30         continue
+            ztot=0
+
+        DO 10 n=1,nbin
+        DO 40 k=istart,iend    
+
+           zmod=0.
+           facd=Rmax*(n-1)/nbin
+           facu=Rmax*n/nbin
+           
+           zmod=(z(k)*z(k))
+           rmod=sqrt(x(k)*x(k)+y(k)*y(k))
+           if (rmod.lt.facu .and.rmod.gt.facd) then
+           zbin(n)= zbin(n)+1
+           znum(n)=znum(n)+1.
+           zmeana(n)=zmeana(n)+zmod
+           end if
+
+
+ 40     CONTINUE
+ 10     CONTINUE   
+
+        DO 25 l=1,nbin
+           zmeana(l)=zmeana(l)/znum(l)
+           zmean(l)=(zmeana(l))
+           ztot=ztot+zbin(l)
+        print*,Rmax*l/nbin,zmeana(l),zbin(l),ztot
+ 25     CONTINUE
+
+        IF (gdev(1:4) .EQ. 'file') THEN
+        OPEN(uout,FILE='zscale.out',STATUS='UNKNOWN')
+        DO 20 l=1,nbin
+        WRITE(UOUT,*)Rmax*l/nbin,zmeana(l),zbin(l)
+ 20     CONTINUE
+        CLOSE(uout)
+        RETURN
+        end if
+
+        RETURN
+        
+        END

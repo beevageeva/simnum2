@@ -1,5 +1,5 @@
-outFolderName = "/scratch/cglez/PRACTICAS/PRACTICA1/PRU_E/STAB/OUTRM"
-modelFolderName = "/scratch/cglez/PRACTICAS/PRACTICA1/PRU_E/STAB"
+outFolderName = "/scratch/cglez/PRACTICAS/PRACTICA2/orbitaD/STAB/OUT"
+modelFolderName = "/scratch/cglez/PRACTICAS/PRACTICA2/orbitaD/STAB"
 modelname = "TREEBOD" 
 noraFolderName = "/scratch/cglez/PRACTICAS/NORA/"   
-numModels = 41
+numModels = 28

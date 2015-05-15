@@ -1,0 +1,86 @@
+C***************************************************************************
+C
+             SUBROUTINE VSFIND
+     &        (istart, iend, coordmax, sigma3, meanvt2)
+C
+C***************************************************************************
+
+       IMPLICIT NONE
+
+       
+       INCLUDE 'nora.def'
+
+       INTEGER istart, iend
+       REAL coordmax
+       REAL vr(nmax), vt(nmax),r(nmax)
+       REAL th(nmax),ph(nmax),phiv(nmax)
+       REAL meanvr,meanvt,meanvz,sigmar2,sigmat2,sigmaz2
+       REAL meanvt2,sigma3,liminf,limsup
+
+       INTEGER n,tot,tot2
+
+       tot=0
+       tot2=0
+       meanvr=0.
+       meanvt=0.
+       meanvz=0.
+       sigmar2=0.
+       sigmat2=0.
+       sigmaz2=0.
+       meanvt2=0.
+       sigma3=0.
+
+           CALL XYZtoRTP(istart, iend, 
+     &          x, y, z, r, th, ph)
+
+	   CALL VelToCyl
+     &        (istart, iend, r, th, ph, vx, vy, vz, vr, vt, phiv)
+
+       Do 10 n = istart, iend
+
+          if (r(n).lt.coordmax) then
+             tot=tot+1
+             meanvr=meanvr+vr(n)
+             meanvt=meanvt+vt(n)
+             meanvz=meanvz+vz(n)
+          endif
+ 10    CONTINUE
+
+       meanvr=meanvr/tot
+       meanvt=meanvt/tot
+       meanvz=meanvz/tot
+C       print*,'medias y total:',meanvr,meanvt,meanvz,tot,r(1234)
+       Do 20 n = istart, iend
+          if (r(n).lt.coordmax) then
+            sigmar2=sigmar2+((vr(n)-meanvr)*(vr(n)-meanvr))
+            sigmat2=sigmat2+((vt(n)-meanvt)*(vt(n)-meanvt))
+            sigmaz2=sigmaz2+((vz(n)-meanvz)*(vz(n)-meanvz))
+          endif
+ 20    CONTINUE
+       
+       sigmar2=sigmar2/tot
+       sigmat2=sigmat2/tot
+       sigmaz2=sigmaz2/tot
+
+       sigma3=sigmar2+sigmat2+sigmaz2
+
+       sigma3=sqrt(sigma3)
+
+       liminf=coordmax-(coordmax/10.)
+       limsup=coordmax+(coordmax/10.)
+
+       Do 30 n=istart, iend
+          if (r(n).ge.liminf.and.r(n).le.limsup) then
+             tot2=tot2+1
+             meanvt2=meanvt2+vt(n)
+          endif
+ 30    CONTINUE
+
+       meanvt2=meanvt2/tot2
+
+
+C       print*,'sigma3, <V_phi>:',sigma3,meanvt2,tot2,liminf,limsup
+
+       RETURN
+       END
+

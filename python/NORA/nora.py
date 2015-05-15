@@ -91,7 +91,7 @@ class PickDialog(wx.Panel):
 				self.parentFrame.repaint()	
 
 		def onSelect(self, event):
-			print(self.cb.GetClientData(self.cb.GetSelection()))
+			#print(self.cb.GetClientData(self.cb.GetSelection()))
 			print("GET VALUE %s" % self.cb.GetValue())
 			self.parentFrame.ranges[self.rangeValue][1] = int(self.cb.GetValue())
 
@@ -212,6 +212,9 @@ class CanvasFrame(wx.Frame):
 				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
 				self.Bind(wx.EVT_MENU, self.OnShowObjects, m_showObjects)
 
+				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
+				self.Bind(wx.EVT_MENU, self.OnAngMom1, m_showObjects)
+
 				m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
 				self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
 				menuBar.Append(menu, "&File")
@@ -239,6 +242,8 @@ class CanvasFrame(wx.Frame):
 				vpanel = wx.Panel(self)
 				self.canvas = FigureCanvas(vpanel, -1, self.figure)
 				self.axes = self.figure.add_subplot(111, projection='3d')
+				#TODO aurtoscale
+				self.axes.autoscale(False)
 				#self.canvas.SetSize((800,600))
 				self.canvas.mpl_connect('pick_event', self.onpick2)
 
@@ -313,7 +318,9 @@ class CanvasFrame(wx.Frame):
 			self.currentModelNumberIndex = len(self.modelNumbers)-1
 			self.reloadModel()
 
-		def OnShowObjects(self, event):
+
+
+		def  selectObjects(self):
 			lastindex = 0	
 			indices1 = []
 			indices2 = []
@@ -323,7 +330,30 @@ class CanvasFrame(wx.Frame):
 					indices1+=range(lastindex, item[0])
 				elif(item[1][1] == 2 and item[1][0]):
 					indices2+=range(lastindex, item[0])
-				lastindex = item[0]	
+				lastindex = item[0]
+			return indices1, indices2
+
+
+		def  selectObject(self, numberObj):
+			lastindex = 0	
+			indices1 = []
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][1] == numberObj and item[1][0] ):
+					massPart = item[1][2]	
+					indices1+=range(lastindex, item[0])
+				lastindex = item[0]
+			return indices1
+		
+
+		def OnAngMom1(self, event):
+			print "sdfgsd"
+
+
+
+
+		def OnShowObjects(self, event):
+			indices1, indices2 = self.selectObjects()	
 			if len(indices1)==0 or len(indices2)==0:
 				return
 			xcenter1 = np.mean(self.data[indices1,0])
@@ -435,15 +465,14 @@ class CanvasFrame(wx.Frame):
 			#print(self.data.shape)
 			self.axes.cla()
 			self.vector = None
-			lastindex = 0
-			indices = []
-			for item in sorted(self.ranges.items()):
-				if(item[1][0]):
-					indices+=range(lastindex, item[0])
-				lastindex = item[0]
 					
-
-			self.axes.plot(self.data[indices,0] ,  self.data[indices,1], self.data[indices,2], "ko", markersize=1, picker=1)
+			indices1, indices2 = self.selectObjects()
+			#print("indices 1")
+			#print(indices1)	
+			#print("indices 2")
+			#print(indices2)	
+			self.axes.plot(self.data[indices1,0] ,  self.data[indices1,1], self.data[indices1,2], "go", markersize=1, picker=1)
+			self.axes.plot(self.data[indices2,0] ,  self.data[indices2,1], self.data[indices2,2], "ro", markersize=1, picker=1)
 			#use mayavi package?
 			#velInd = np.array(indices) + self.numpart
 			#self.axes.quiver3d(self.data[indices,0] ,  self.data[indices,1], self.data[indices,2], self.data[velInd,0] , self.data[velInd,1], self.data[velInd,2])

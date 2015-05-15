@@ -1,0 +1,21 @@
+
+C------------
+C  Output model with desired particles
+C------------
+c
+c	ELSE IF (command .EQ. 'outmodel2') THEN
+c	    outfile	= strgets(par(1), erpar(1))
+c	    outmodel	= strgeti(par(2), erpar(2))
+c	    istart	= strgeti(par(3), erpar(3))
+c	    iend	= strgeti(par(4), erpar(4))
+c	    
+c        IF (erpar(1)+erpar(2)+erpar(3)+erpar(4) .NE. 0) THEN
+c                PRINT '(A)', usage(command)
+c                GO TO 120
+c            END IF
+c
+c	    CALL m2head(pmass, header)
+c	    CALL xvpwrite2
+c     1         (outmodel, outfile, header, istart, iend,
+c     1          x, y, z, vx, vy, vz, pmass, ppot,
+c     1          ierr)

@@ -1,0 +1,11 @@
+C	INCLUDE FILE 'nora.def'
+C
+	INTEGER nmax
+c        PARAMETER (nmax=600000)
+	PARAMETER (nmax=3000000) 
+        REAL x, y, z, vx, vy, vz, pmass, ppot, header
+        COMMON /bods/ x(nmax),  y(nmax),  z(nmax),
+     &                vx(nmax), vy(nmax), vz(nmax), 
+     &                pmass(nmax), ppot(nmax)
+        COMMON /head/ header(128)
+
