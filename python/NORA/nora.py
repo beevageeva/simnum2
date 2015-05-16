@@ -246,8 +246,6 @@ class CanvasFrame(wx.Frame):
 				vpanel = wx.Panel(self)
 				self.canvas = FigureCanvas(vpanel, -1, self.figure)
 				self.axes = self.figure.add_subplot(111, projection='3d')
-				#TODO aurtoscale
-				self.axes.autoscale(False)
 				#self.canvas.SetSize((800,600))
 				self.canvas.mpl_connect('pick_event', self.onpick2)
 
@@ -525,14 +523,68 @@ class CanvasFrame(wx.Frame):
 			#print(indices1)	
 			#print("indices 2")
 			#print(indices2)	
-			self.axes.plot(self.data[indices1,0] ,  self.data[indices1,1], self.data[indices1,2], "go", markersize=1, picker=1)
-			self.axes.plot(self.data[indices2,0] ,  self.data[indices2,1], self.data[indices2,2], "ro", markersize=1, picker=1)
+
+			x1 = self.data[indices1,0]
+			x2 = self.data[indices2,0]
+			y1 = self.data[indices1,1]
+			y2 = self.data[indices2,1]
+			z1 = self.data[indices1,2]
+			z2 = self.data[indices2,2]
+
+			
+			self.axes.plot(x1, y1, z1,  "go", markersize=1, picker=1)
+			self.axes.plot(x2 , y2, z2, "ro", markersize=1, picker=1)
 			#use mayavi package?
 			#velInd = np.array(indices) + self.numpart
 			#self.axes.quiver3d(self.data[indices,0] ,  self.data[indices,1], self.data[indices,2], self.data[velInd,0] , self.data[velInd,1], self.data[velInd,2])
 			self.axes.set_xlabel('x')
 			self.axes.set_ylabel('y')
 			self.axes.set_zlabel('z')
+			#TODO aurtoscale
+			#self.figure.tight_layout()	
+			#self.axes.autoscale(True)
+			
+
+			def maxa(a1,a2):
+				if(a1.size == 0 and a2.size == 0):
+					return 0
+				elif(a1.size == 0):
+					return a2.max()
+				elif(a2.size==0):
+					return a1.max()
+				else:
+					return max(a1.max(), a2.max())
+
+			def mina(a1,a2):
+				if(a1.size == 0 and a2.size == 0):
+					return 0
+				elif(a1.size == 0):
+					return a2.min()
+				elif(a2.size==0):
+					return a1.min()
+				else:
+					return min(a1.min(), a2.min())
+
+			def meana(a1, a2):
+				if(a1.size == 0 and a2.size == 0):
+					return 0
+				elif(a1.size == 0):
+					return a2.mean()
+				elif(a2.size==0):
+					return a1.mean()
+				else:
+					return 0.5 * (a1.mean() +  a2.mean())
+
+			max_range = np.array([maxa(x1, x2)-mina(x1, x2), maxa(y1, y2)-mina(y1, y2), maxa(z1, z2)-mina(z1, z2)]).max() / 2.0
+			mean_x = meana(x1,x2)
+			mean_y = meana(y1,y2)
+			mean_z = meana(z1,z2)
+			self.axes.set_xlim(mean_x - max_range, mean_x + max_range)
+			self.axes.set_ylim(mean_y - max_range, mean_y + max_range)
+			self.axes.set_zlim(mean_z - max_range, mean_z + max_range)
+
+
+			#self.axes.set_aspect(1)
 
 class App(wx.App):
 

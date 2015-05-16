@@ -13,15 +13,15 @@ for modelNumber in range(numModels):
 	try:
 		modelNumber+=1
 		child = pexpect.spawn("./xvp-asc")
-		child.expect (['BINtoASC>> Name of INPUT File :',pexpect.EOF])  
+		child.expect ('BINtoASC>> Name of INPUT File :')  
 		child.sendline("%s" % (binModelFilename))
-		child.expect (['BINtoASC>> Model number :',pexpect.EOF])  
+		child.expect ('BINtoASC>> Model number :')  
 		child.sendline("%s" % (modelNumber))
-		child.expect (['BINtoASC>> Name of OUTPUT ASCII File :',pexpect.EOF]) 
+		child.expect ('BINtoASC>> Name of OUTPUT ASCII File :') 
 		 
 		child.sendline("%s" % (outPrefixPattern.replace("REPLACENUMBER", str(modelNumber))))
-		child.expect (['outbods>> Writing ',pexpect.EOF]) 
-		#child.close()
+		child.expect ('outbods>> Writing ') 
+		child.close()
 	
 	except:
 		print("Exception was thrown")
