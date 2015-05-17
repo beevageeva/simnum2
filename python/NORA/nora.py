@@ -221,8 +221,13 @@ class CanvasFrame(wx.Frame):
 
 				m_exit = menu.Append(wx.ID_EXIT, "E&xit\tAlt-X", "Close window and exit program.")
 				self.Bind(wx.EVT_MENU, self.OnClose, m_exit)
-				menuBar.Append(menu, "&File")
+				menuBar.Append(menu, "&Each")
 
+				menu = wx.Menu()
+				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompare1, m_showObjects)
+
+				menuBar.Append(menu, "&All")
 			
 				menu = wx.Menu()
 				m_about = menu.Append(wx.ID_ABOUT, "&About", "Information about this program")
@@ -362,12 +367,11 @@ class CanvasFrame(wx.Frame):
 			xcenter = np.mean(self.data[indices1,0])
 			ycenter = np.mean(self.data[indices1,1])
 			zcenter = np.mean(self.data[indices1,2])
-			return [xcenter,ycenter,zcenter]	
+			return np.array([xcenter,ycenter,zcenter])	
 
 		def  angMom(self, objNumber):
 			lastindex = 0
 			am = np.zeros(3)		
-			center = self.getCenter(self.selectObject(objNumber))
 			
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
@@ -376,32 +380,73 @@ class CanvasFrame(wx.Frame):
 					indices =np.arange(lastindex, item[0])
 					print("AM")
 					print(am.shape)
-					am+=massPart * np.cross(self.data[indices] - center, self.data[indices + self.numpart]).sum(axis=0)
+					am+=massPart * np.cross(self.data[indices] , self.data[indices + self.numpart]).sum(axis=0)
 				lastindex = item[0]
 			return am
 		
 		def  angMomTotal(self):
 			lastindex = 0
 			am = np.zeros(3)		
-			center = self.getCenter(self.selectObjectsAll())
 			
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
 				if(item[1][0] ):
 					massPart = item[1][2]	
 					indices =np.arange(lastindex, item[0])
-					am+=massPart * np.cross(self.data[indices] - center, self.data[indices + self.numpart]).sum(axis=0)
+					am+=massPart * np.cross(self.data[indices], self.data[indices + self.numpart]).sum(axis=0)
 				lastindex = item[0]
 			return am
 
 		def OnAngMom1(self, event):
-			print self.angMom(1)
+			center = self.getCenter(self.selectObject(1))
+			am = self.angMom(1)
+			print("AM ")
+			print(am)
+			self.drawVector(center, center + 100 * am)
+			
+		def OnAngMomCompare1(self, event):
+			print("AM COMPARE")
+			mydata = self.data
+			norapyam = np.zeros(len(self.modelNumbers))
+			i=0
+			for i in range(len(self.modelNumbers)):
+				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
+				print("FILENAME %s" % filename)
+				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
+				am = self.angMom(1)
+				norapyam[i] = np.sqrt(am[0]**2+am[1]**2+am[2]**2)
+			from extern import getAngMom
+			noraam = getAngMom(0)	
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), norapyam, 'k')
+			plt.plot(noraam[0], noraam[1], 'y')
+			self.data = mydata
+			plt.draw()
+			plt.show(block=False)
 
 		def OnAngMom2(self, event):
-			print self.angMom(2)
+			center = self.getCenter(self.selectObject(2))
+			am = self.angMom(2)
+			print("AM ")
+			print(am)
+			self.drawVector(center, center + 100 * am)
 
 		def OnAngMomTotal(self, event):
-			print self.angMomTotal()
+			center = self.getCenter(self.selectObjectsAll())
+			am = self.angMomTotal()
+			print("AM ")
+			print(am)
+			self.drawVector(center, center + 100 * am)
+
+
+		def drawVector(self, v1, v2):
+			if not self.vector is None:
+				self.vector.remove()
+			self.vector = Arrow3D([v1[0],v2[0]],[v1[1], v2[1]],[v1[2], v2[2]], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
+			self.axes.add_artist(self.vector)
+			self.repaint()
+
 
 
 		def OnShowObjects(self, event):
@@ -415,11 +460,7 @@ class CanvasFrame(wx.Frame):
 			ycenter2 = np.mean(self.data[indices2,1])
 			zcenter2 = np.mean(self.data[indices2,2])
 			print("Center distance is %e" % ((xcenter1-xcenter2)**2 + (ycenter1-ycenter2)**2 + (zcenter1-zcenter2)**2)**0.5  )
-			if not self.vector is None:
-				self.vector.remove()
-			self.vector = Arrow3D([xcenter1,xcenter2],[ycenter1,ycenter2],[zcenter1, zcenter2], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
-			self.axes.add_artist(self.vector)
-			self.repaint()
+			self.drawVector([xcenter1, ycenter1, zcenter1], [xcenter2, ycenter2, zcenter2])
 	
 			
 		#TODO center of mass distance
@@ -443,11 +484,7 @@ class CanvasFrame(wx.Frame):
 			ycenter2 = np.mean(self.data[indices2,1])
 			zcenter2 = np.mean(self.data[indices2,2])
 			print("Center distance is %e" % ((xcenter1-xcenter2)**2 + (ycenter1-ycenter2)**2 + (zcenter1-zcenter2)**2)**0.5  )
-			if not self.vector is None:
-				self.vector.remove()
-			self.vector = Arrow3D([xcenter1,xcenter2],[ycenter1,ycenter2],[zcenter1, zcenter2], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
-			self.axes.add_artist(self.vector)
-			self.repaint()
+			self.drawVector([xcenter1, ycenter1, zcenter1], [xcenter2, ycenter2, zcenter2])
 
 
 	
@@ -462,11 +499,7 @@ class CanvasFrame(wx.Frame):
 				if self.data[i,0] == x[ind] and self.data[i,1] == y[ind] and self.data[i,2] == z[ind]:
 					print("Found index in data %d" % i)
 					print("velocity is vx=%e,vy=%e,vz=%e" % (self.data[self.numpart+i,0], self.data[self.numpart+i,1], self.data[self.numpart+i,2]))
-					if not self.vector is None:
-						self.vector.remove()
-					self.vector = Arrow3D([x[ind],x[ind] +10* self.data[self.numpart+i,0]],[y[ind],y[ind]+10* self.data[self.numpart+i,1]],[z[ind],z[ind]+10*self.data[self.numpart+i,2]], mutation_scale=20, lw=1, arrowstyle="-|>", color="r")
-					self.axes.add_artist(self.vector)
-					self.repaint()
+					self.drawVector([x[ind],y[ind], z[ind]],[x[ind] +10* self.data[self.numpart+i,0], y[ind]+10* self.data[self.numpart+i,1], z[ind]+10*self.data[self.numpart+i,2] ] )
 					break	
 			#z = thisline.get_zdata()[ind]
 			#print x, y, z
@@ -504,14 +537,6 @@ class CanvasFrame(wx.Frame):
 				dlg.ShowModal()
 				dlg.Destroy()
 
-		def OnClear(self, event):
-			for isoname in self.isochrones.keys():
-				self.isochrones[isoname]["plotted"].clear()
-				del self.isochrones[isoname]["toPlot"][:]
-			self.axes.cla()
-			self.plotMyData()
-			#repaint
-			self.repaint()
 			
 		def plotMyData(self):
 			#print(self.data.shape)
@@ -583,6 +608,7 @@ class CanvasFrame(wx.Frame):
 			self.axes.set_ylim(mean_y - max_range, mean_y + max_range)
 			self.axes.set_zlim(mean_z - max_range, mean_z + max_range)
 
+			self.axes.set_title("Model %d" % self.currentModelNumberIndex)
 
 			#self.axes.set_aspect(1)
 
