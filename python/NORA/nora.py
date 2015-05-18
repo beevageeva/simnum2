@@ -196,6 +196,7 @@ class CanvasFrame(wx.Frame):
 				for i in range(numRanges):
 					self.ranges[int(float(header[102+2*i]))] =  [True, 1,float(header[102+2*i+1]) ]
 
+
 				print(self.numpart)
 				print(self.ranges)
 				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
@@ -210,7 +211,9 @@ class CanvasFrame(wx.Frame):
 				menu = wx.Menu()
 
 				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
-				self.Bind(wx.EVT_MENU, self.OnShowObjects, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnCenterDistance, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
+				self.Bind(wx.EVT_MENU, self.OnCenterMassDistance, m_showObjects)
 
 				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
 				self.Bind(wx.EVT_MENU, self.OnAngMom1, m_showObjects)
@@ -226,6 +229,14 @@ class CanvasFrame(wx.Frame):
 				menu = wx.Menu()
 				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
 				self.Bind(wx.EVT_MENU, self.OnAngMomCompare1, m_showObjects)
+				m_showObjects = menu.Append(-1, "Angular moment 2", "Angular moment 2")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompare2, m_showObjects)
+				m_showObjects = menu.Append(-1, "Angular moment both", "Angular moment both")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompareAll, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
+				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCompare, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
+				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCompare, m_showObjects)
 
 				menuBar.Append(menu, "&All")
 			
@@ -326,6 +337,7 @@ class CanvasFrame(wx.Frame):
 			self.reloadModel()
 
 
+		#center begin
 		def  selectObject(self, objNum):
 			lastindex = 0	
 			indices1 = []
@@ -369,6 +381,53 @@ class CanvasFrame(wx.Frame):
 			zcenter = np.mean(self.data[indices1,2])
 			return np.array([xcenter,ycenter,zcenter])	
 
+		#center END
+
+		#center of mass
+		def  centerOfMass(self, objNum):
+			lastindex = 0	
+			m1 = 0
+			mtot = 0
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][1] == objNum and item[1][0] ):
+					m1+=self.data[lastindex:item[0],:].sum(axis=0) * item[1][2]
+					mtot+=(item[0] - lastindex) * item[1][2]
+				lastindex = item[0]
+			return m1/mtot
+
+		def  centerOfMassBoth(self):
+			lastindex = 0	
+			m1 = 0
+			m2 = 0
+			mtot1 = 0
+			mtot2 = 0
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][1] == 1 and item[1][0] ):
+					m1+=self.data[lastindex:item[0],:].sum(axis=0) * item[1][2]
+					mtot1+=(item[0] - lastindex) * item[1][2]
+				elif(item[1][1] == 2 and item[1][0]):
+					m2+=self.data[lastindex:item[0],:].sum(axis=0) * item[1][2]
+					mtot2+=(item[0] - lastindex) * item[1][2]
+				lastindex = item[0]
+			return m1/mtot1, m2/mtot2
+
+		def  centerOfMassAll(self):
+			lastindex = 0	
+			m1 = 0
+			mtot = 0
+			for item in sorted(self.ranges.items()):
+				#print("Object is %d" % item[1][1])
+				if(item[1][0]):
+					m1+=self.data[lastindex:item[0],:].sum(axis=0) * item[1][2]
+					mtot+=(item[0] - lastindex) * item[1][2]
+				lastindex = item[0]
+			return m1/mtot
+
+		#center of mass END
+
+
 		def  angMom(self, objNumber):
 			lastindex = 0
 			am = np.zeros(3)		
@@ -403,7 +462,9 @@ class CanvasFrame(wx.Frame):
 			print("AM ")
 			print(am)
 			self.drawVector(center, center + 100 * am)
-			
+
+
+		#TODO repeated code in the following 3 functions			
 		def OnAngMomCompare1(self, event):
 			print("AM COMPARE")
 			mydata = self.data
@@ -421,6 +482,107 @@ class CanvasFrame(wx.Frame):
 			plt.figure(1)
 			plt.plot(range(len(self.modelNumbers)), norapyam, 'k')
 			plt.plot(noraam[0], noraam[1], 'y')
+			self.data = mydata
+			plt.draw()
+			plt.show(block=False)
+
+		def OnAngMomCompare2(self, event):
+			print("AM COMPARE 2")
+			mydata = self.data
+			norapyam = np.zeros(len(self.modelNumbers))
+			i=0
+			for i in range(len(self.modelNumbers)):
+				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
+				print("FILENAME %s" % filename)
+				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
+				am = self.angMom(2)
+				norapyam[i] = np.sqrt(am[0]**2+am[1]**2+am[2]**2)
+			from extern import getAngMom
+			noraam = getAngMom(1)	
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), norapyam, 'k')
+			plt.plot(noraam[0], noraam[1], 'y')
+			self.data = mydata
+			plt.draw()
+			plt.show(block=False)
+
+
+
+		def OnAngMomCompareAll(self, event):
+			print("AM COMPARE")
+			mydata = self.data
+			norapyam = np.zeros(len(self.modelNumbers))
+			i=0
+			for i in range(len(self.modelNumbers)):
+				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
+				print("FILENAME %s" % filename)
+				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
+				am = self.angMomTotal()
+				norapyam[i] = np.sqrt(am[0]**2+am[1]**2+am[2]**2)
+			from extern import getAngMom
+			noraam = getAngMom(2)	
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), norapyam, 'k')
+			plt.plot(noraam[0], noraam[1], 'y')
+			self.data = mydata
+			plt.draw()
+			plt.show(block=False)
+
+
+
+		def  OnCenterDistanceCompare(self, event):
+			print("MEDCENT COMPARE")
+			mydata = self.data
+			norapydist = np.zeros(len(self.modelNumbers))
+			i=0
+			indices1, indices2 = self.selectObjects()
+			for i in range(len(self.modelNumbers)):
+				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
+				print("FILENAME %s" % filename)
+				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
+				center1 = self.getCenter(indices1)	
+				center2 = self.getCenter(indices2)	
+				norapydist[i] = np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
+			from extern import getMedcent
+			noradist = getMedcent(self.modelNumbers, indices1, indices2)
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), norapydist, 'k')
+			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
+			#plot treeorb dist
+			from extern import getTreeorbDist
+			d3 = getTreeorbDist()
+			plt.plot(d3[0], d3[1], 'r')
+
+			self.data = mydata
+			plt.draw()
+			plt.show(block=False)
+
+		def  OnCenterOfMassDistanceCompare(self, event):
+			print("CMCENT COMPARE")
+			mydata = self.data
+			norapydist = np.zeros(len(self.modelNumbers))
+			i=0
+			indices1, indices2 = self.selectObjects()
+			for i in range(len(self.modelNumbers)):
+				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
+				print("FILENAME %s" % filename)
+				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
+				center1, center2  = self.centerOfMassBoth()
+				norapydist[i] = np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
+			from extern import getCMcent
+			noradist = getCMcent(self.modelNumbers, indices1, indices2)
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), norapydist, 'k')
+			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
+			#plot treeorb dist
+#			from extern import getTreeorbDist
+#			d3 = getTreeorbDist()
+#			plt.plot(d3[0], d3[1], 'r')
+
 			self.data = mydata
 			plt.draw()
 			plt.show(block=False)
@@ -449,42 +611,18 @@ class CanvasFrame(wx.Frame):
 
 
 
-		def OnShowObjects(self, event):
-			indices1, indices2 = self.selectObjects()	
-			if len(indices1)==0 or len(indices2)==0:
-				return
-			xcenter1 = np.mean(self.data[indices1,0])
-			ycenter1 = np.mean(self.data[indices1,1])
-			zcenter1 = np.mean(self.data[indices1,2])
-			xcenter2 = np.mean(self.data[indices2,0])
-			ycenter2 = np.mean(self.data[indices2,1])
-			zcenter2 = np.mean(self.data[indices2,2])
-			print("Center distance is %e" % ((xcenter1-xcenter2)**2 + (ycenter1-ycenter2)**2 + (zcenter1-zcenter2)**2)**0.5  )
-			self.drawVector([xcenter1, ycenter1, zcenter1], [xcenter2, ycenter2, zcenter2])
+		def OnCenterDistance(self, event):
+			indices1, indices2 = self.selectObjects()
+			center1 = self.getCenter(indices1)	
+			center2 = self.getCenter(indices2)	
+			print("Center distance is %e" % ((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)**0.5  )
+			self.drawVector(center1, center2)
 	
 			
-		#TODO center of mass distance
-		def OnShowObjects2(self, event):
-			lastindex = 0	
-			indices1 = []
-			indices2 = []
-			for item in sorted(self.ranges.items()):
-				#print("Object is %d" % item[1][1])
-				if(item[1][1] == 1 and item[1][0] ):
-					indices1+=range(lastindex, item[0])
-				elif(item[1][1] == 2 and item[1][0]):
-					indices2+=range(lastindex, item[0])
-				lastindex = item[0]	
-			if len(indices1)==0 or len(indices2)==0:
-				return
-			xcenter1 = np.mean(self.data[indices1,0])
-			ycenter1 = np.mean(self.data[indices1,1])
-			zcenter1 = np.mean(self.data[indices1,2])
-			xcenter2 = np.mean(self.data[indices2,0])
-			ycenter2 = np.mean(self.data[indices2,1])
-			zcenter2 = np.mean(self.data[indices2,2])
-			print("Center distance is %e" % ((xcenter1-xcenter2)**2 + (ycenter1-ycenter2)**2 + (zcenter1-zcenter2)**2)**0.5  )
-			self.drawVector([xcenter1, ycenter1, zcenter1], [xcenter2, ycenter2, zcenter2])
+		def OnCenterMassDistance(self, event):
+			center1, center2 = self.centerOfMassBoth()
+			print("Center of mass distance is %e" % ((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)**0.5  )
+			self.drawVector(center1, center2)
 
 
 	

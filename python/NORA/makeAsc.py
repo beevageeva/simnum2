@@ -4,7 +4,7 @@ import os.path
 
 
 binModelFilename = "TREEBOD"
-numModels = 27
+numModels = 50
 outPrefixPattern="ModelREPLACENUMBER.txt"
 
 
