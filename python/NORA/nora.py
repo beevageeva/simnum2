@@ -27,34 +27,11 @@ from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 
 from matplotlib.figure import Figure
 
-import wx, wx.html, sys,getopt, os.path
-from math import fabs
-
-#				<p>SFR string: %(sfr)s </p><p>
-#				<p>CEL1 string: %(cel1)s </p>
-#				<p>CEL2 string: %(cel2)s </p>
+import wx, wx.html, sys,getopt
 
 
-class AboutBox(wx.Dialog):
-		def __init__(self):
-				wx.Dialog.__init__(self, None, -1, "About <<project>>",
-						style=wx.DEFAULT_DIALOG_STYLE|wx.THICK_FRAME|wx.RESIZE_BORDER| wx.CLOSE_BOX|
-								wx.TAB_TRAVERSAL)
-				hwin = wx.html.HtmlWindow(self, -1, size=(400,200))
-				vers = {}
-				aboutText = """
-				It is running on version %(wxpy)s of <b>wxPython</b> and %(python)s of <b>Python</b>.
-				See <a href="http://wiki.wxpython.org">wxPython Wiki</a></p>"""
-				vers["python"] = sys.version.split()[0]
-				vers["wxpy"] = wx.VERSION_STRING
+useCalcValues = True
 
-				hwin.SetPage(aboutText % vers)
-				btn = hwin.FindWindowById(wx.ID_OK)
-				irep = hwin.GetInternalRepresentation()
-				hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+10))
-				self.SetClientSize(hwin.GetSize())
-				self.CentreOnParent(wx.BOTH)
-				self.SetFocus()
 
 
 
@@ -229,22 +206,22 @@ class CanvasFrame(wx.Frame):
 				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
 				self.Bind(wx.EVT_MENU, self.OnAngMomCalc1, m_showObjects)
 				m_showObjects = menu.Append(-1, "Angular moment 2", "Angular moment 2")
-				self.Bind(wx.EVT_MENU, self.OnAngMomCompare2, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnAngMomCalc2, m_showObjects)
 				m_showObjects = menu.Append(-1, "Angular moment both", "Angular moment both")
-				self.Bind(wx.EVT_MENU, self.OnAngMomCompareAll, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnAngMomCalcTotal, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
-				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCompare, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCalc, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
-				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCompare, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCalc, m_showObjects)
 				menuBar.Append(menu, "&All (calc)")
 		
 				menu = wx.Menu()
 				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
-				self.Bind(wx.EVT_MENU, self.OnAngMomCompare1, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnAngMomExt1, m_showObjects)
 				m_showObjects = menu.Append(-1, "Angular moment 2", "Angular moment 2")
-				self.Bind(wx.EVT_MENU, self.OnAngMomCompare2, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnAngMomExt2, m_showObjects)
 				m_showObjects = menu.Append(-1, "Angular moment both", "Angular moment both")
-				self.Bind(wx.EVT_MENU, self.OnAngMomCompareAll, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnAngMomExtAll, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
 				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCompare, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
@@ -273,12 +250,6 @@ class CanvasFrame(wx.Frame):
 
 				menuBar.Append(menu, "&All (comp)")
 
-
-	
-				menu = wx.Menu()
-				m_about = menu.Append(wx.ID_ABOUT, "&About", "Information about this program")
-				self.Bind(wx.EVT_MENU, self.OnAbout, m_about)
-				menuBar.Append(menu, "&Help")
 
 				self.SetMenuBar(menuBar)
 				self.statusbar = self.CreateStatusBar()
@@ -467,7 +438,7 @@ class CanvasFrame(wx.Frame):
 		def  angMom(self, objNumber, testVis = True):
 			lastindex = 0
 			am = np.zeros(3)		
-			
+			cm = self.centerOfMass(objNumber)	
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
 				if(item[1][1] == objNumber and ( (testVis and item[1][0]) or not testVis) ):
@@ -475,20 +446,20 @@ class CanvasFrame(wx.Frame):
 					indices =np.arange(lastindex, item[0])
 					#print("AM")
 					#print(am.shape)
-					am+=massPart * np.cross(self.data[indices] , self.data[indices + self.numpart]).sum(axis=0)
+					am+=massPart * np.cross(self.data[indices] - cm , self.data[indices + self.numpart]).sum(axis=0)
 				lastindex = item[0]
 			return am
 		
 		def  angMomTotal(self, testVis = True):
 			lastindex = 0
 			am = np.zeros(3)		
-			
+			cm = self.centerOfMassAll()
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
-				if((item[1][0] and testVis) or not TestVis):
+				if((item[1][0] and testVis) or not testVis):
 					massPart = item[1][2]	
 					indices =np.arange(lastindex, item[0])
-					am+=massPart * np.cross(self.data[indices], self.data[indices + self.numpart]).sum(axis=0)
+					am+=massPart * np.cross(self.data[indices] - cm, self.data[indices + self.numpart]).sum(axis=0)
 				lastindex = item[0]
 			return am
 
@@ -524,8 +495,12 @@ class CanvasFrame(wx.Frame):
 
 
 
-		def performForAllModels(self, f):
-			print("PERF MODELS")
+		def performForAllModels(self, f, txtfn):
+			print("PERF MODELS useCalcValues = %s" % str(useCalcValues))
+			from os.path import isfile
+			if useCalcValues and isfile(txtfn):
+				print("Using file %s" % txtfn)
+				return np.loadtxt(txtfn)
 			mydata = self.data
 			norapyam = np.zeros(len(self.modelNumbers))
 			i=0
@@ -536,30 +511,33 @@ class CanvasFrame(wx.Frame):
 				norapyam[i] = f()
 
 			self.data = mydata
+			if useCalcValues:
+				print("Saving file %s" % txtfn)
+				np.savetxt(txtfn, norapyam)
 			return norapyam
 
 		def calcAngMom1(self, testVis=True):
 			def func():
-				print("CALLING FUNC")
+				#print("CALLING FUNC")
 				am = self.angMom(1, testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			return self.performForAllModels(func)
+			return self.performForAllModels(func, "am1.txt")
 
 
 		def calcAngMom2(self, testVis = True):
 			def func():
-				print("CALLING FUNC")
+				#print("CALLING FUNC")
 				am = self.angMom(2, testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			return self.performForAllModels(func)
+			return self.performForAllModels(func, "am2.txt")
 
 
 		def calcAngMomTotal(self, testVis = True):
 			def func():
-				print("CALLING FUNC")
+				#print("CALLING FUNC")
 				am = self.angMomTotal(testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			return self.performForAllModels(func)
+			return self.performForAllModels(func, "am3.txt")
 
 
 		def calcCenterDistance(self): 
@@ -568,17 +546,22 @@ class CanvasFrame(wx.Frame):
 				center1 = self.getCenter(indices1)	
 				center2 = self.getCenter(indices2)	
 				return  np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
-			return self.performForAllModels(func)
+			return self.performForAllModels(func, "medcent.txt")
 
+		def calcCenterOfMassDistance(self): 
+			def func():	
+				center1, center2  = self.centerOfMassBoth()
+				return  np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
+			return self.performForAllModels(func, "medcent.txt")
 
 		def calcEk1(self):
-			return self.performForAllModels(lambda: self.ek(1))
+			return self.performForAllModels(lambda: self.ek(1), "ek1.txt")
 
 		def calcEk2(self):
-			return self.performForAllModels(lambda: self.ek(2))
+			return self.performForAllModels(lambda: self.ek(2), "ek2.txt")
 
 		def calcEkTotal(self, testVis = True):
-			return self.performForAllModels(lambda: self.ekAll(testVis))
+			return self.performForAllModels(lambda: self.ekAll(testVis), "ek3.txt")
 
 
 
@@ -592,10 +575,28 @@ class CanvasFrame(wx.Frame):
 		def OnAngMomCalc1(self, event):
 			import matplotlib.pyplot as plt
 			plt.figure(1)
+			plt.title("AM1")
 			plt.plot(range(len(self.modelNumbers)), self.calcAngMom1(), 'k')
 			plt.draw()
 			plt.show(block=False)
 			
+		def OnAngMomCalc2(self, event):
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.cla()
+			plt.title("AM2")
+			plt.plot(range(len(self.modelNumbers)), self.calcAngMom2(), 'k')
+			plt.draw()
+			plt.show(block=False)
+
+		def OnAngMomCalcTotal(self, event):
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.cla()
+			plt.title("AM Total")
+			plt.plot(range(len(self.modelNumbers)), self.calcAngMomTotal(), 'k')
+			plt.draw()
+			plt.show(block=False)
 
 
 		def OnEkCalc1(self, event):
@@ -653,10 +654,22 @@ class CanvasFrame(wx.Frame):
 			plt.draw()
 			plt.show(block=False)
 
+		def OnAngMomExt1(self, event):
+			print("AM EXT")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.cla()
+			from extern import getAngMom
+			noraam = getAngMom(0)	
+			plt.plot(noraam[0], noraam[1], 'k')
+			plt.draw()
+			plt.show(block=False)
+
 		def OnAngMomCompare2(self, event):
 			print("AM COMPARE 2")
 			import matplotlib.pyplot as plt
 			plt.figure(1)
+			plt.cla()
 			plt.plot(range(len(self.modelNumbers)),self.calcAngMom2(False), 'k')
 			from extern import getAngMom
 			noraam = getAngMom(1)	
@@ -664,12 +677,23 @@ class CanvasFrame(wx.Frame):
 			plt.draw()
 			plt.show(block=False)
 
+		def OnAngMomExt2(self, event):
+			print("AM EXT 2")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.cla()
+			from extern import getAngMom
+			noraam = getAngMom(1)	
+			plt.plot(noraam[0], noraam[1], 'k')
+			plt.draw()
+			plt.show(block=False)
 
 
 		def OnAngMomCompareAll(self, event):
 			print("AM COMPARE")
 			import matplotlib.pyplot as plt
 			plt.figure(1)
+			plt.cla()
 			plt.plot(range(len(self.modelNumbers)), self.calcAngMomTotal(False), 'k')
 			from extern import getAngMom
 			noraam = getAngMom(2)	
@@ -677,47 +701,93 @@ class CanvasFrame(wx.Frame):
 			plt.draw()
 			plt.show(block=False)
 
+		def OnAngMomExtAll(self, event):
+			print("AM EXT")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.cla()
+			from extern import getAngMom
+			noraam = getAngMom(2)	
+			plt.plot(noraam[0], noraam[1], 'k')
+			plt.draw()
+			plt.show(block=False)
 
+		def  OnCenterDistanceCalc(self, event):
+			print("MEDCENT CALC")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.title("Medcent")
+			plt.plot(range(len(self.modelNumbers)), self.calcCenterDistance(), 'k')
+			plt.draw()
+			plt.show(block=False)
+
+		def  OnCenterOfMassDistanceCalc(self, event):
+			print("MEDCENT CALC")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.title("CM")
+			plt.plot(range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), 'k')
+			plt.draw()
+			plt.show(block=False)
+
+		def  OnCenterDistanceExt(self, event):
+			print("MEDCENT EXT")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			from extern import getMedcent
+			noradist = getMedcent(self.modelNumbers, indices1, indices2)
+			plt.plot(range(len(self.modelNumbers)), noradist, 'k')
+			plt.draw()
+			plt.show(block=False)
 
 		def  OnCenterDistanceCompare(self, event):
 			print("MEDCENT COMPARE")
 			import matplotlib.pyplot as plt
 			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), self.calcCenterDistance(), 'k')
+			plt.cla()
+			plt.plot(range(len(self.modelNumbers)), self.calcCenterDistance(), 'k', label="calc")
 			from extern import getMedcent
 			noradist = getMedcent(self.modelNumbers, indices1, indices2)
-			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
+			plt.plot(range(len(self.modelNumbers)), noradist, 'y', legend="nora medcent")
 			#plot treeorb dist
 			from extern import getTreeorbDist
 			d3 = getTreeorbDist()
-			plt.plot(d3[0], d3[1], 'r')
+			plt.plot(d3[0], d3[1], 'r', label="Treeorb")
+			plt.legend()
 			plt.draw()
 			plt.show(block=False)
 
-		def  OnCenterOfMassDistanceCompare(self, event):
-			print("CMCENT COMPARE")
-			mydata = self.data
-			norapydist = np.zeros(len(self.modelNumbers))
-			i=0
-			indices1, indices2 = self.selectObjects()
-			for i in range(len(self.modelNumbers)):
-				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
-				print("FILENAME %s" % filename)
-				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
-				center1, center2  = self.centerOfMassBoth()
-				norapydist[i] = np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
-			from extern import getCMcent
-			noradist = getCMcent(self.modelNumbers, indices1, indices2)
+		def  OnCenterOfMassDistanceExt(self, event):
+			print("CMCENT EXT")
 			import matplotlib.pyplot as plt
 			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), norapydist, 'k')
+			plt.cla()
+			plt.title("CM compare")
+			from extern import getCMcent
+			noradist = getCMcent(self.modelNumbers, indices1, indices2)
 			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
 			#plot treeorb dist
 #			from extern import getTreeorbDist
 #			d3 = getTreeorbDist()
 #			plt.plot(d3[0], d3[1], 'r')
 
-			self.data = mydata
+			plt.draw()
+			plt.show(block=False)
+
+		def  OnCenterOfMassDistanceCompare(self, event):
+			print("CMCENT COMPARE")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.title("CM compare")
+			plt.plot(range(len(self.modelNumbers)), calcCenterOfMassDistance(), 'k')
+			from extern import getCMcent
+			noradist = getCMcent(self.modelNumbers, indices1, indices2)
+			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
+			#plot treeorb dist
+#			from extern import getTreeorbDist
+#			d3 = getTreeorbDist()
+#			plt.plot(d3[0], d3[1], 'r')
+
 			plt.draw()
 			plt.show(block=False)
 
