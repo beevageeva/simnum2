@@ -200,7 +200,6 @@ class CanvasFrame(wx.Frame):
 				print(self.numpart)
 				print(self.ranges)
 				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
-
 				self.vector = None
 				wx.Frame.__init__(self,None,-1,
 												 'CanvasFrame')
@@ -228,6 +227,19 @@ class CanvasFrame(wx.Frame):
 
 				menu = wx.Menu()
 				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCalc1, m_showObjects)
+				m_showObjects = menu.Append(-1, "Angular moment 2", "Angular moment 2")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompare2, m_showObjects)
+				m_showObjects = menu.Append(-1, "Angular moment both", "Angular moment both")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompareAll, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
+				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCompare, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
+				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCompare, m_showObjects)
+				menuBar.Append(menu, "&All (calc)")
+		
+				menu = wx.Menu()
+				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
 				self.Bind(wx.EVT_MENU, self.OnAngMomCompare1, m_showObjects)
 				m_showObjects = menu.Append(-1, "Angular moment 2", "Angular moment 2")
 				self.Bind(wx.EVT_MENU, self.OnAngMomCompare2, m_showObjects)
@@ -237,9 +249,32 @@ class CanvasFrame(wx.Frame):
 				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCompare, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
 				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCompare, m_showObjects)
+				m_showObjects = menu.Append(-1, "Energy", "Energy")
+				self.Bind(wx.EVT_MENU, self.OnExtEnergy, m_showObjects)
+				m_showObjects = menu.Append(-1, "Virial Th.", "Virial Th.")
+				self.Bind(wx.EVT_MENU, self.OnExtVirialTh, m_showObjects)
 
-				menuBar.Append(menu, "&All")
-			
+				menuBar.Append(menu, "&All (ext)")
+
+
+				menu = wx.Menu()
+				m_showObjects = menu.Append(-1, "Angular moment 1", "Angular moment 1")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompare1, m_showObjects)
+				m_showObjects = menu.Append(-1, "Angular moment 2", "Angular moment 2")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompare2, m_showObjects)
+				m_showObjects = menu.Append(-1, "Angular moment both", "Angular moment both")
+				self.Bind(wx.EVT_MENU, self.OnAngMomCompareAll, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
+				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCompare, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
+				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCompare, m_showObjects)
+				m_showObjects = menu.Append(-1, "Ek", "Ek")
+				self.Bind(wx.EVT_MENU, self.OnEkCompare, m_showObjects)
+
+				menuBar.Append(menu, "&All (comp)")
+
+
+	
 				menu = wx.Menu()
 				m_about = menu.Append(wx.ID_ABOUT, "&About", "Information about this program")
 				self.Bind(wx.EVT_MENU, self.OnAbout, m_about)
@@ -428,45 +463,69 @@ class CanvasFrame(wx.Frame):
 		#center of mass END
 
 
-		def  angMom(self, objNumber):
+		#angular mom
+		def  angMom(self, objNumber, testVis = True):
 			lastindex = 0
 			am = np.zeros(3)		
 			
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
-				if(item[1][1] == objNumber and item[1][0] ):
+				if(item[1][1] == objNumber and ( (testVis and item[1][0]) or not testVis) ):
 					massPart = item[1][2]	
 					indices =np.arange(lastindex, item[0])
-					print("AM")
-					print(am.shape)
+					#print("AM")
+					#print(am.shape)
 					am+=massPart * np.cross(self.data[indices] , self.data[indices + self.numpart]).sum(axis=0)
 				lastindex = item[0]
 			return am
 		
-		def  angMomTotal(self):
+		def  angMomTotal(self, testVis = True):
 			lastindex = 0
 			am = np.zeros(3)		
 			
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
-				if(item[1][0] ):
+				if((item[1][0] and testVis) or not TestVis):
 					massPart = item[1][2]	
 					indices =np.arange(lastindex, item[0])
 					am+=massPart * np.cross(self.data[indices], self.data[indices + self.numpart]).sum(axis=0)
 				lastindex = item[0]
 			return am
 
-		def OnAngMom1(self, event):
-			center = self.getCenter(self.selectObject(1))
-			am = self.angMom(1)
-			print("AM ")
-			print(am)
-			self.drawVector(center, center + 100 * am)
+		#angular mom end
 
 
-		#TODO repeated code in the following 3 functions			
-		def OnAngMomCompare1(self, event):
-			print("AM COMPARE")
+		#Ek start
+
+		def  ek(self, objNumber):
+			lastindex = 0
+			ek = 0
+			for item in sorted(self.ranges.items()):
+				if(item[1][1] == objNumber and item[1][0] ):
+					massPart = item[1][2]	
+					indices =np.arange(lastindex, item[0])
+					ek+=massPart * np.sum(self.data[indices,0]**2 + self.data[indices,1]**2 + self.data[indices,2]**2  )
+				lastindex = item[0]
+			return ek
+
+		def  ekAll(self, testVis=True):
+			lastindex = 0
+			ek = 0
+			for item in sorted(self.ranges.items()):
+				if( (item[1][0] and testVis) or not testVis):
+					massPart = item[1][2]	
+					indices =np.arange(lastindex, item[0])
+					ek+=massPart * np.sum(self.data[indices,0]**2 + self.data[indices,1]**2 + self.data[indices,2]**2  )
+				lastindex = item[0]
+			return ek
+
+
+		#Ek end
+
+
+
+		def performForAllModels(self, f):
+			print("PERF MODELS")
 			mydata = self.data
 			norapyam = np.zeros(len(self.modelNumbers))
 			i=0
@@ -474,36 +533,134 @@ class CanvasFrame(wx.Frame):
 				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
 				print("FILENAME %s" % filename)
 				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
-				am = self.angMom(1)
-				norapyam[i] = np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			from extern import getAngMom
-			noraam = getAngMom(0)	
+				norapyam[i] = f()
+
+			self.data = mydata
+			return norapyam
+
+		def calcAngMom1(self, testVis=True):
+			def func():
+				print("CALLING FUNC")
+				am = self.angMom(1, testVis)
+				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
+			return self.performForAllModels(func)
+
+
+		def calcAngMom2(self, testVis = True):
+			def func():
+				print("CALLING FUNC")
+				am = self.angMom(2, testVis)
+				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
+			return self.performForAllModels(func)
+
+
+		def calcAngMomTotal(self, testVis = True):
+			def func():
+				print("CALLING FUNC")
+				am = self.angMomTotal(testVis)
+				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
+			return self.performForAllModels(func)
+
+
+		def calcCenterDistance(self): 
+			indices1, indices2 = self.selectObjects()
+			def func():	
+				center1 = self.getCenter(indices1)	
+				center2 = self.getCenter(indices2)	
+				return  np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
+			return self.performForAllModels(func)
+
+
+		def calcEk1(self):
+			return self.performForAllModels(lambda: self.ek(1))
+
+		def calcEk2(self):
+			return self.performForAllModels(lambda: self.ek(2))
+
+		def calcEkTotal(self, testVis = True):
+			return self.performForAllModels(lambda: self.ekAll(testVis))
+
+
+
+		def OnAngMom1(self, event):
+			center = self.getCenter(self.selectObject(1))
+			am = self.angMom(1)
+			print("AM1 ")
+			print(am)
+			self.drawVector(center, center + 100 * am)
+
+		def OnAngMomCalc1(self, event):
 			import matplotlib.pyplot as plt
 			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), norapyam, 'k')
+			plt.plot(range(len(self.modelNumbers)), self.calcAngMom1(), 'k')
+			plt.draw()
+			plt.show(block=False)
+			
+
+
+		def OnEkCalc1(self, event):
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), self.calcEk1(), 'k')
+			plt.draw()
+			plt.show(block=False)
+
+		def OnEkCompare(self, event):
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), self.calcEkTotal(False), 'k')
+			from extern import getTreelogE
+			ee = getTreelogE()	
+			plt.plot(ee[0], ee[1][:,1], 'y')
+			plt.draw()
+			plt.show(block=False)
+
+
+
+
+		def OnExtEnergy(self, event):
+			from extern import getTreelogE
+			res = getTreelogE()	
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.title("Energies from TREELOG")
+			plt.plot(res[0], res[1][:,0], 'k', label="Et")
+			plt.plot(res[0], res[1][:,1], 'r', label="Ek")
+			plt.plot(res[0], res[1][:,2], 'b', label="Ep")
+			plt.legend()
+			plt.draw()
+			plt.show(block=False)
+
+		def OnExtVirialTh(self, event):
+			from extern import getTreelogE
+			res = getTreelogE()	
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.title("Virial Th from TREELOG")
+			plt.plot(res[0], 2 * res[1][:,1] + res[1][:,2], 'k')
+			plt.draw()
+			plt.show(block=False)
+
+		#TODO repeated code in the following 3 functions			
+		def OnAngMomCompare1(self, event):
+			print("AM COMPARE")
+			import matplotlib.pyplot as plt
+			plt.figure(1)
+			plt.plot(range(len(self.modelNumbers)), self.calcAngMom1(False), 'k')
+			from extern import getAngMom
+			noraam = getAngMom(0)	
 			plt.plot(noraam[0], noraam[1], 'y')
-			self.data = mydata
 			plt.draw()
 			plt.show(block=False)
 
 		def OnAngMomCompare2(self, event):
 			print("AM COMPARE 2")
-			mydata = self.data
-			norapyam = np.zeros(len(self.modelNumbers))
-			i=0
-			for i in range(len(self.modelNumbers)):
-				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
-				print("FILENAME %s" % filename)
-				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
-				am = self.angMom(2)
-				norapyam[i] = np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			from extern import getAngMom
-			noraam = getAngMom(1)	
 			import matplotlib.pyplot as plt
 			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), norapyam, 'k')
+			plt.plot(range(len(self.modelNumbers)),self.calcAngMom2(False), 'k')
+			from extern import getAngMom
+			noraam = getAngMom(1)	
 			plt.plot(noraam[0], noraam[1], 'y')
-			self.data = mydata
 			plt.draw()
 			plt.show(block=False)
 
@@ -511,22 +668,12 @@ class CanvasFrame(wx.Frame):
 
 		def OnAngMomCompareAll(self, event):
 			print("AM COMPARE")
-			mydata = self.data
-			norapyam = np.zeros(len(self.modelNumbers))
-			i=0
-			for i in range(len(self.modelNumbers)):
-				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
-				print("FILENAME %s" % filename)
-				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
-				am = self.angMomTotal()
-				norapyam[i] = np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			from extern import getAngMom
-			noraam = getAngMom(2)	
 			import matplotlib.pyplot as plt
 			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), norapyam, 'k')
+			plt.plot(range(len(self.modelNumbers)), self.calcAngMomTotal(False), 'k')
+			from extern import getAngMom
+			noraam = getAngMom(2)	
 			plt.plot(noraam[0], noraam[1], 'y')
-			self.data = mydata
 			plt.draw()
 			plt.show(block=False)
 
@@ -534,29 +681,16 @@ class CanvasFrame(wx.Frame):
 
 		def  OnCenterDistanceCompare(self, event):
 			print("MEDCENT COMPARE")
-			mydata = self.data
-			norapydist = np.zeros(len(self.modelNumbers))
-			i=0
-			indices1, indices2 = self.selectObjects()
-			for i in range(len(self.modelNumbers)):
-				filename = self.globPattern.replace("*", str(self.modelNumbers[i]) )
-				print("FILENAME %s" % filename)
-				self.data = np.loadtxt(filename, skiprows=1+self.numpart)
-				center1 = self.getCenter(indices1)	
-				center2 = self.getCenter(indices2)	
-				norapydist[i] = np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
-			from extern import getMedcent
-			noradist = getMedcent(self.modelNumbers, indices1, indices2)
 			import matplotlib.pyplot as plt
 			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), norapydist, 'k')
+			plt.plot(range(len(self.modelNumbers)), self.calcCenterDistance(), 'k')
+			from extern import getMedcent
+			noradist = getMedcent(self.modelNumbers, indices1, indices2)
 			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
 			#plot treeorb dist
 			from extern import getTreeorbDist
 			d3 = getTreeorbDist()
 			plt.plot(d3[0], d3[1], 'r')
-
-			self.data = mydata
 			plt.draw()
 			plt.show(block=False)
 
@@ -586,6 +720,13 @@ class CanvasFrame(wx.Frame):
 			self.data = mydata
 			plt.draw()
 			plt.show(block=False)
+
+		#END	
+
+
+
+
+
 
 		def OnAngMom2(self, event):
 			center = self.getCenter(self.selectObject(2))
