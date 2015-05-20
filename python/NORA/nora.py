@@ -36,6 +36,30 @@ useCalcValues = True
 
 
 
+def plot2d(values, title):
+	import matplotlib.pyplot as plt
+	plotLegend = False
+	f = plt.figure(1)
+	f.suptitle(title)
+	plt.cla()
+	#plt.title(title)
+	#TODO this is a crap
+	isMultArr = hasattr(values[0][0], "__len__")
+	if(isMultArr):
+		for i in range(len(values)):
+			if(len(values[i])==3):	
+				plt.plot(values[i][0], values[i][1], label=values[i][2])
+				plotLegend = True
+			else:
+				plt.plot(values[i][0], values[i][1])
+	else:	
+		plt.plot(values[0], values[1])
+	plt.draw()
+	plt.show(block=False)
+	if plotLegend:
+		#plt.legend(loc='upper center', bbox_to_anchor=(1, 0.5))
+		plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+           ncol=2, mode="expand", borderaxespad=0.)
 
 
 
@@ -213,6 +237,12 @@ class CanvasFrame(wx.Frame):
 				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCalc, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
 				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCalc, m_showObjects)
+				m_showObjects = menu.Append(-1, "Ek1", "Ek1")
+				self.Bind(wx.EVT_MENU, self.OnEkCalc1, m_showObjects)
+				m_showObjects = menu.Append(-1, "Ek2", "Ek2")
+				self.Bind(wx.EVT_MENU, self.OnEkCalc2, m_showObjects)
+				m_showObjects = menu.Append(-1, "Ek total", "Ek total")
+				self.Bind(wx.EVT_MENU, self.OnEkCalcTotal, m_showObjects)
 				menuBar.Append(menu, "&All (calc)")
 		
 				menu = wx.Menu()
@@ -223,13 +253,17 @@ class CanvasFrame(wx.Frame):
 				m_showObjects = menu.Append(-1, "Angular moment both", "Angular moment both")
 				self.Bind(wx.EVT_MENU, self.OnAngMomExtAll, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center distance", "Center distance")
-				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCompare, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnCenterDistanceExt, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
-				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCompare, m_showObjects)
+				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceExt, m_showObjects)
 				m_showObjects = menu.Append(-1, "Energy", "Energy")
 				self.Bind(wx.EVT_MENU, self.OnExtEnergy, m_showObjects)
 				m_showObjects = menu.Append(-1, "Virial Th.", "Virial Th.")
 				self.Bind(wx.EVT_MENU, self.OnExtVirialTh, m_showObjects)
+				m_showObjects = menu.Append(-1, "Treelog AM", "Treelog AM")
+				self.Bind(wx.EVT_MENU, self.OnExtTreelogAM, m_showObjects)
+				m_showObjects = menu.Append(-1, "Treelog cmpos", "Treelog cmpos")
+				self.Bind(wx.EVT_MENU, self.OnExtTreelogCMPos, m_showObjects)
 
 				menuBar.Append(menu, "&All (ext)")
 
@@ -344,35 +378,35 @@ class CanvasFrame(wx.Frame):
 
 
 		#center begin
-		def  selectObject(self, objNum):
+		def  selectObject(self, objNum, testVis = True):
 			lastindex = 0	
 			indices1 = []
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
-				if(item[1][1] == objNum and item[1][0] ):
+				if(item[1][1] == objNum and ((testVis and item[1][0]) or not testVis) ):
 					indices1+=range(lastindex, item[0])
 				lastindex = item[0]
 			return indices1
 
-		def  selectObjects(self):
+		def  selectObjects(self, testVis = True):
 			lastindex = 0	
 			indices1 = []
 			indices2 = []
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
-				if(item[1][1] == 1 and item[1][0] ):
+				if(item[1][1] == 1 and ((testVis and item[1][0]) or not testVis) ):
 					indices1+=range(lastindex, item[0])
-				elif(item[1][1] == 2 and item[1][0]):
+				elif(item[1][1] == 2 and ((testVis and item[1][0]) or not testVis) ):
 					indices2+=range(lastindex, item[0])
 				lastindex = item[0]
 			return indices1, indices2
 
-		def  selectObjectsAll(self):
+		def  selectObjectsAll(self, testVis = True):
 			lastindex = 0	
 			indices1 = []
 			for item in sorted(self.ranges.items()):
 				#print("Object is %d" % item[1][1])
-				if(item[1][0]):
+				if( (item[1][0] and testVis) or not testVis):
 					indices1+=range(lastindex, item[0])
 				lastindex = item[0]
 			return indices1
@@ -521,7 +555,8 @@ class CanvasFrame(wx.Frame):
 				#print("CALLING FUNC")
 				am = self.angMom(1, testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			return self.performForAllModels(func, "am1.txt")
+			indices1 = self.selectObject(1, testVis)
+			return self.performForAllModels(func, "am1-%d-%d.txt" % (min(indices1), max(indices1)))
 
 
 		def calcAngMom2(self, testVis = True):
@@ -529,7 +564,8 @@ class CanvasFrame(wx.Frame):
 				#print("CALLING FUNC")
 				am = self.angMom(2, testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			return self.performForAllModels(func, "am2.txt")
+			indices2 = self.selectObject(2, testVis)
+			return self.performForAllModels(func, "am2-%d-%d.txt" % (min(indices2), max(indices2)))
 
 
 		def calcAngMomTotal(self, testVis = True):
@@ -537,7 +573,8 @@ class CanvasFrame(wx.Frame):
 				#print("CALLING FUNC")
 				am = self.angMomTotal(testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			return self.performForAllModels(func, "am3.txt")
+			indices = self.selectObjectsAll(testVis)
+			return self.performForAllModels(func, "am3-%d-%d.txt" % (min(indices), max(indices)))
 
 
 		def calcCenterDistance(self): 
@@ -546,22 +583,27 @@ class CanvasFrame(wx.Frame):
 				center1 = self.getCenter(indices1)	
 				center2 = self.getCenter(indices2)	
 				return  np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
-			return self.performForAllModels(func, "medcent.txt")
+			return self.performForAllModels(func, "medcent-%d-%d-%d-%d.txt" % (min(indices1),max(indices1),min(indices2), max(indices2) ))
 
 		def calcCenterOfMassDistance(self): 
+			indices1, indices2 = self.selectObjects()
 			def func():	
 				center1, center2  = self.centerOfMassBoth()
 				return  np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
-			return self.performForAllModels(func, "medcent.txt")
+			return self.performForAllModels(func, "cmcent-%d-%d-%d-%d.txt" % (min(indices1),max(indices1),min(indices2), max(indices2) ))
 
 		def calcEk1(self):
-			return self.performForAllModels(lambda: self.ek(1), "ek1.txt")
+			indices = self.selectObject(1)
+			return self.performForAllModels(lambda: self.ek(1), "ek1-%d-%d.txt" % (min(indices), max(indices)))
 
 		def calcEk2(self):
-			return self.performForAllModels(lambda: self.ek(2), "ek2.txt")
+			indices = self.selectObject(2)
+			return self.performForAllModels(lambda: self.ek(2), "ek2-%d-%d.txt" % (min(indices), max(indices)))
 
 		def calcEkTotal(self, testVis = True):
-			return self.performForAllModels(lambda: self.ekAll(testVis), "ek3.txt")
+			indices = self.selectObjectsAll(testVis)
+			#TODO if testVis = True indices will not be a continuous interval!!!	
+			return self.performForAllModels(lambda: self.ekAll(testVis), "ek3-%d-%d.txt" % (min(indices), max(indices)))
 
 
 
@@ -600,21 +642,19 @@ class CanvasFrame(wx.Frame):
 
 
 		def OnEkCalc1(self, event):
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), self.calcEk1(), 'k')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([range(len(self.modelNumbers)), self.calcEk1()], "Ek1" )
+
+		def OnEkCalc2(self, event):
+			plot2d([range(len(self.modelNumbers)), self.calcEk2()], "Ek2")
+
+		def OnEkCalcTotal(self,event):
+			plot2d([range(len(self.modelNumbers)), self.calcEkTotal()], "Ek total")
+
 
 		def OnEkCompare(self, event):
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), self.calcEkTotal(False), 'k')
 			from extern import getTreelogE
 			ee = getTreelogE()	
-			plt.plot(ee[0], ee[1][:,1], 'y')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([[range(len(self.modelNumbers)), self.calcEkTotal(False), "calc"], [ee[0], ee[1][:,1], "ext"]], "Ek total compare")
 
 
 
@@ -641,6 +681,33 @@ class CanvasFrame(wx.Frame):
 			plt.plot(res[0], 2 * res[1][:,1] + res[1][:,2], 'k')
 			plt.draw()
 			plt.show(block=False)
+
+
+		def OnExtTreelogAM(self, event):
+			from extern import getTreelogAM
+			res = getTreelogAM()
+			am = np.sqrt(res[1][:,0]**2 + res[1][:,1]**2 + res[1][:,2]**2)	
+			#plot without AM **2
+			#plot2d([res[0], am], "Treelog am")
+			#plot WITH AM **2
+			from extern import getAngMomAll
+			restam = getAngMomAll()
+			amtam = np.sqrt(restam[1]**2 + restam[2]**2 + restam[3]**2)
+			plot2d([[res[0], am, "TREELOG"],[restam[0],amtam, "TREEAM"]], "Ext AM")
+			
+
+		def OnExtTreelogCMPos(self, event):
+			from extern import getTreelogCMPos
+			res = getTreelogCMPos()
+			am = np.sqrt(res[1][:,0]**2 + res[1][:,1]**2 + res[1][:,2]**2)	
+			#plot WITHOUT treelog	
+			#plot2d([res[0], am], "Distance CM from origin")
+			#plot WITH treelog	
+			from extern import getCMCenterAll
+			plot2d([[range(len(self.modelNumbers)), getCMCenterAll(self.modelNumbers), "NORA"], [res[0], am, "TREELOG"]], "Ext CMPos")
+			
+
+
 
 		#TODO repeated code in the following 3 functions			
 		def OnAngMomCompare1(self, event):
@@ -690,16 +757,21 @@ class CanvasFrame(wx.Frame):
 
 
 		def OnAngMomCompareAll(self, event):
-			print("AM COMPARE")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.cla()
-			plt.plot(range(len(self.modelNumbers)), self.calcAngMomTotal(False), 'k')
+			print("AM COMPARE TOTAL")
+
+			#COMPARE with treeam
 			from extern import getAngMom
 			noraam = getAngMom(2)	
-			plt.plot(noraam[0], noraam[1], 'y')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([[range(len(self.modelNumbers)), self.calcAngMomTotal(False), "calc"],[noraam[0], noraam[1], "TREEAM"] ], "AM Comp")
+
+#			#compare with treelog
+#			from extern import getTreelogAM
+#			res = getTreelogAM()
+#			am = np.sqrt(res[1][:,0]**2 + res[1][:,1]**2 + res[1][:,2]**2)
+#			plot2d([[range(len(self.modelNumbers)), self.calcAngMomTotal(False), "calc"],[res[0], am, "TREELOG"] ], "AM comp")
+#			#selfam = np.sqrt(self.calcAngMomTotal(False)**2 + self.calcAngMom1(False)**2 + self.calcAngMom2(False)**2 )	
+#			#plot2d([[range(len(self.modelNumbers)), selfam, "calc"],[res[0], am, "TREELOG"] ], "AM comp")
+
 
 		def OnAngMomExtAll(self, event):
 			print("AM EXT")
@@ -732,6 +804,7 @@ class CanvasFrame(wx.Frame):
 
 		def  OnCenterDistanceExt(self, event):
 			print("MEDCENT EXT")
+			indices1, indices2 = self.selectObjects()
 			import matplotlib.pyplot as plt
 			plt.figure(1)
 			from extern import getMedcent
@@ -742,54 +815,30 @@ class CanvasFrame(wx.Frame):
 
 		def  OnCenterDistanceCompare(self, event):
 			print("MEDCENT COMPARE")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.cla()
-			plt.plot(range(len(self.modelNumbers)), self.calcCenterDistance(), 'k', label="calc")
+			indices1, indices2 = self.selectObjects()
 			from extern import getMedcent
-			noradist = getMedcent(self.modelNumbers, indices1, indices2)
-			plt.plot(range(len(self.modelNumbers)), noradist, 'y', legend="nora medcent")
-			#plot treeorb dist
-			from extern import getTreeorbDist
-			d3 = getTreeorbDist()
-			plt.plot(d3[0], d3[1], 'r', label="Treeorb")
-			plt.legend()
-			plt.draw()
-			plt.show(block=False)
+			#plot WITHOUT treeorb dist
+			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, indices1, indices2), "nora medcent"] ], "medcent compare")
+			#plot WITH treeorb dist
+#			from extern import getTreeorbDist
+#			d3 = getTreeorbDist()
+#			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, indices1, indices2), "nora medcent"] , [d3[0], d3[1], "Treeorb"] ], "medcent compare")
+
+
 
 		def  OnCenterOfMassDistanceExt(self, event):
 			print("CMCENT EXT")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.cla()
-			plt.title("CM compare")
+			indices1, indices2 = self.selectObjects()
 			from extern import getCMcent
-			noradist = getCMcent(self.modelNumbers, indices1, indices2)
-			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
-			#plot treeorb dist
-#			from extern import getTreeorbDist
-#			d3 = getTreeorbDist()
-#			plt.plot(d3[0], d3[1], 'r')
+			plot2d([range(len(self.modelNumbers)), getCMcent(self.modelNumbers, indices1, indices2)], "CM Nora" )
 
-			plt.draw()
-			plt.show(block=False)
 
 		def  OnCenterOfMassDistanceCompare(self, event):
 			print("CMCENT COMPARE")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.title("CM compare")
-			plt.plot(range(len(self.modelNumbers)), calcCenterOfMassDistance(), 'k')
 			from extern import getCMcent
-			noradist = getCMcent(self.modelNumbers, indices1, indices2)
-			plt.plot(range(len(self.modelNumbers)), noradist, 'y')
-			#plot treeorb dist
-#			from extern import getTreeorbDist
-#			d3 = getTreeorbDist()
-#			plt.plot(d3[0], d3[1], 'r')
+			indices1, indices2 = self.selectObjects()
+			plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, indices1, indices2), "nora"]], "CM compare" )
 
-			plt.draw()
-			plt.show(block=False)
 
 		#END	
 
@@ -905,12 +954,32 @@ class CanvasFrame(wx.Frame):
 			z1 = self.data[indices1,2]
 			z2 = self.data[indices2,2]
 
-			
+			#plot points			
 			self.axes.plot(x1, y1, z1,  "go", markersize=1, picker=1)
 			self.axes.plot(x2 , y2, z2, "ro", markersize=1, picker=1)
+
+
 			#use mayavi package?
 			#velInd = np.array(indices) + self.numpart
 			#self.axes.quiver3d(self.data[indices,0] ,  self.data[indices,1], self.data[indices,2], self.data[velInd,0] , self.data[velInd,1], self.data[velInd,2])
+#			#matplotlib 1.4
+#			N = 100
+#			indices = np.array(indices1 + indices2)
+#			#USE MEAN N VALUES
+##			velInd = indices + self.numpart
+##			c1 = self.data[indices,:].reshape(-1, N, 3)
+##			b1 = np.mean(c1, axis=1)
+##			c2 = self.data[velInd,:].reshape(-1, N, 3)
+##			b2 = np.mean(c2, axis=1)
+##			self.axes.quiver(b1[:,0] ,  b1[:,1], b1[:,2], b2[:,0] , b2[:,1], b2[:,2])
+#
+#			#USE EVERY N value
+#			indices = indices[::N]
+#			velInd = indices + self.numpart
+#			self.axes.quiver(self.data[indices,0] ,  self.data[indices,1], self.data[indices,2], self.data[velInd,0] , self.data[velInd,1], self.data[velInd,2])
+#			#end matplotlib 1.4
+
+
 			self.axes.set_xlabel('x')
 			self.axes.set_ylabel('y')
 			self.axes.set_zlabel('z')

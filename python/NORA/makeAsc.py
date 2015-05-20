@@ -10,6 +10,7 @@ outPrefixPattern="ModelREPLACENUMBER.txt"
 
 
 for modelNumber in range(numModels):
+	print("NumModel %d" % modelNumber)
 	try:
 		modelNumber+=1
 		child = pexpect.spawn("./xvp-asc")
