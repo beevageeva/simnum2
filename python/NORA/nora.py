@@ -122,7 +122,18 @@ class PickDialog(wx.Panel):
 		sizer2.Add(button4)
 
 		panelButtons.SetSizer(sizer2)
+
+
+
 		sizer.Add(panelButtons)
+		#sliders for mult am and vel
+		sizer.Add(wx.StaticText(self, -1, "Mult vel and am:"))
+		slider1 = wx.Slider(self, -1, 10, 0, 100, size=(150,50),style = wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+		slider1.Bind(wx.EVT_SLIDER, parentFrame.sliderUpdateVel)
+		slider2 = wx.Slider(self, -1, 100, 0, 1000, size=(150,50), style = wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+		slider2.Bind(wx.EVT_SLIDER, parentFrame.sliderUpdateAM)
+		sizer.Add(slider1)
+		sizer.Add(slider2)
 
 		self.SetSizer(sizer)
 		print("  ---- end " +  str(self.GetSize()))
@@ -167,6 +178,8 @@ class CanvasFrame(wx.Frame):
 				self.repaint()
 
 		def __init__(self, globPattern):
+				self.multAM = 100
+				self.multVel = 10
 				self.globPattern = globPattern
 				#read model
 				self.modelNumbers = []
@@ -237,6 +250,8 @@ class CanvasFrame(wx.Frame):
 				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCalc, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
 				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceCalc, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center distance compare", "Center distance compare")
+				self.Bind(wx.EVT_MENU, self.OnCenterDistanceCalcCompare, m_showObjects)
 				m_showObjects = menu.Append(-1, "Ek1", "Ek1")
 				self.Bind(wx.EVT_MENU, self.OnEkCalc1, m_showObjects)
 				m_showObjects = menu.Append(-1, "Ek2", "Ek2")
@@ -256,6 +271,8 @@ class CanvasFrame(wx.Frame):
 				self.Bind(wx.EVT_MENU, self.OnCenterDistanceExt, m_showObjects)
 				m_showObjects = menu.Append(-1, "Center of mass distance", "Center of mass distance")
 				self.Bind(wx.EVT_MENU, self.OnCenterOfMassDistanceExt, m_showObjects)
+				m_showObjects = menu.Append(-1, "Center distance compare", "Center distance compare")
+				self.Bind(wx.EVT_MENU, self.OnCenterDistanceExtCompare, m_showObjects)
 				m_showObjects = menu.Append(-1, "Energy", "Energy")
 				self.Bind(wx.EVT_MENU, self.OnExtEnergy, m_showObjects)
 				m_showObjects = menu.Append(-1, "Virial Th.", "Virial Th.")
@@ -353,6 +370,16 @@ class CanvasFrame(wx.Frame):
 				#TODO why legend does not show first line plotted
 				self.repaint()	
 
+		def sliderUpdateVel(self, event):
+			print("Update vel slider")
+			self.multVel = float(event.GetEventObject().GetValue())
+
+		def sliderUpdateAM(self, event):
+			print("update am slider")
+			self.multAM = float(event.GetEventObject().GetValue())
+
+
+
 
 		def readFirstModel(self, event):
 			print("goto first")
@@ -377,7 +404,8 @@ class CanvasFrame(wx.Frame):
 			self.reloadModel()
 
 
-		#center begin
+		#select indices begin
+
 		def  selectObject(self, objNum, testVis = True):
 			lastindex = 0	
 			indices1 = []
@@ -388,7 +416,7 @@ class CanvasFrame(wx.Frame):
 				lastindex = item[0]
 			return indices1
 
-		def  selectObjects(self, testVis = True):
+		def  selectObjects(self, testVis = True, returnStr = False):
 			lastindex = 0	
 			indices1 = []
 			indices2 = []
@@ -401,7 +429,7 @@ class CanvasFrame(wx.Frame):
 				lastindex = item[0]
 			return indices1, indices2
 
-		def  selectObjectsAll(self, testVis = True):
+		def  selectObjectsAll(self, testVis = True, returnStr = False):
 			lastindex = 0	
 			indices1 = []
 			for item in sorted(self.ranges.items()):
@@ -411,7 +439,29 @@ class CanvasFrame(wx.Frame):
 				lastindex = item[0]
 			return indices1
 
+		#select indices end
 
+
+		#select indices as str begin
+
+		def  selectObjectStr(self, objNum, testVis = True):
+			indStr = ""
+			for item in sorted(self.ranges.items()):
+				if(item[1][1] == objNum and ((testVis and item[1][0]) or not testVis) ):
+					indStr+="-%s" % str(item[0])
+			return indStr
+
+		def  selectObjectsStr(self, testVis = True):
+			indStr = ""
+			for item in sorted(self.ranges.items()):
+				if((testVis and item[1][0]) or not testVis) :
+					indStr+="-%s" % str(item[0])
+			return indStr
+
+
+		#select indices as str end
+
+		#center begin
 		def getCenter(self, indices1):
 			#TODO needed?
 			if len(indices1)==0 :
@@ -555,8 +605,7 @@ class CanvasFrame(wx.Frame):
 				#print("CALLING FUNC")
 				am = self.angMom(1, testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			indices1 = self.selectObject(1, testVis)
-			return self.performForAllModels(func, "am1-%d-%d.txt" % (min(indices1), max(indices1)))
+			return self.performForAllModels(func, "am1%s.txt" % (self.selectObjectStr(1, testVis)))
 
 
 		def calcAngMom2(self, testVis = True):
@@ -564,8 +613,7 @@ class CanvasFrame(wx.Frame):
 				#print("CALLING FUNC")
 				am = self.angMom(2, testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			indices2 = self.selectObject(2, testVis)
-			return self.performForAllModels(func, "am2-%d-%d.txt" % (min(indices2), max(indices2)))
+			return self.performForAllModels(func, "am2%s.txt" % (self.selectObjectStr(2, testVis)))
 
 
 		def calcAngMomTotal(self, testVis = True):
@@ -573,8 +621,7 @@ class CanvasFrame(wx.Frame):
 				#print("CALLING FUNC")
 				am = self.angMomTotal(testVis)
 				return np.sqrt(am[0]**2+am[1]**2+am[2]**2)
-			indices = self.selectObjectsAll(testVis)
-			return self.performForAllModels(func, "am3-%d-%d.txt" % (min(indices), max(indices)))
+			return self.performForAllModels(func, "am3%s.txt" % (self.selectObjectsStr( testVis)))
 
 
 		def calcCenterDistance(self): 
@@ -583,27 +630,22 @@ class CanvasFrame(wx.Frame):
 				center1 = self.getCenter(indices1)	
 				center2 = self.getCenter(indices2)	
 				return  np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
-			return self.performForAllModels(func, "medcent-%d-%d-%d-%d.txt" % (min(indices1),max(indices1),min(indices2), max(indices2) ))
+			return self.performForAllModels(func, "medcent%s.txt" % ( self.selectObjectsStr()  ))
 
 		def calcCenterOfMassDistance(self): 
-			indices1, indices2 = self.selectObjects()
 			def func():	
 				center1, center2  = self.centerOfMassBoth()
 				return  np.sqrt((center1[0] - center2[0] )**2 + (center1[1] - center2[1] )**2 + (center1[2] - center2[2])**2)
-			return self.performForAllModels(func, "cmcent-%d-%d-%d-%d.txt" % (min(indices1),max(indices1),min(indices2), max(indices2) ))
+			return self.performForAllModels(func, "cmcent%s.txt" % (  self.selectObjectsStr() ))
 
 		def calcEk1(self):
-			indices = self.selectObject(1)
-			return self.performForAllModels(lambda: self.ek(1), "ek1-%d-%d.txt" % (min(indices), max(indices)))
+			return self.performForAllModels(lambda: self.ek(1), "ek1%s.txt" % (self.selectObjectStr(1) ))
 
 		def calcEk2(self):
-			indices = self.selectObject(2)
-			return self.performForAllModels(lambda: self.ek(2), "ek2-%d-%d.txt" % (min(indices), max(indices)))
+			return self.performForAllModels(lambda: self.ek(2), "ek2%s.txt" % ( self.selectObjectStr(2) ))
 
 		def calcEkTotal(self, testVis = True):
-			indices = self.selectObjectsAll(testVis)
-			#TODO if testVis = True indices will not be a continuous interval!!!	
-			return self.performForAllModels(lambda: self.ekAll(testVis), "ek3-%d-%d.txt" % (min(indices), max(indices)))
+			return self.performForAllModels(lambda: self.ekAll(testVis), "ek3%s.txt" % ( self.selectObjectsStr( testVis)  ))
 
 
 
@@ -612,7 +654,7 @@ class CanvasFrame(wx.Frame):
 			am = self.angMom(1)
 			print("AM1 ")
 			print(am)
-			self.drawVector(center, center + 100 * am)
+			self.drawVector(center, center + self.multAM * am)
 
 		def OnAngMomCalc1(self, event):
 			import matplotlib.pyplot as plt
@@ -786,32 +828,22 @@ class CanvasFrame(wx.Frame):
 
 		def  OnCenterDistanceCalc(self, event):
 			print("MEDCENT CALC")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.title("Medcent")
-			plt.plot(range(len(self.modelNumbers)), self.calcCenterDistance(), 'k')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([range(len(self.modelNumbers)), self.calcCenterDistance()], "Medcent")
 
 		def  OnCenterOfMassDistanceCalc(self, event):
-			print("MEDCENT CALC")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.title("CM")
-			plt.plot(range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), 'k')
-			plt.draw()
-			plt.show(block=False)
+			print("CMENT CALC")
+			plot2d([range(len(self.modelNumbers)), self.calcCenterOfMassDistance()], "CM")
+
+		def  OnCenterDistanceCalcCompare(self, event):
+			print("Center Distance CALC COMPARE")
+			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "Medcent"], [range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "CM"]], "Center distance compare")
+
 
 		def  OnCenterDistanceExt(self, event):
 			print("MEDCENT EXT")
 			indices1, indices2 = self.selectObjects()
-			import matplotlib.pyplot as plt
-			plt.figure(1)
 			from extern import getMedcent
-			noradist = getMedcent(self.modelNumbers, indices1, indices2)
-			plt.plot(range(len(self.modelNumbers)), noradist, 'k')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([range(len(self.modelNumbers)), getMedcent(self.modelNumbers, indices1, indices2)], "medcent Nora" )
 
 		def  OnCenterDistanceCompare(self, event):
 			print("MEDCENT COMPARE")
@@ -839,6 +871,12 @@ class CanvasFrame(wx.Frame):
 			indices1, indices2 = self.selectObjects()
 			plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, indices1, indices2), "nora"]], "CM compare" )
 
+		def OnCenterDistanceExtCompare(self, event):
+			print("EXT center distance COMPARE")
+			indices1, indices2 = self.selectObjects()
+			from extern import getMedcent, getCMcent
+			plot2d([[range(len(self.modelNumbers)), getMedcent(self.modelNumbers, indices1, indices2), "medcent"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, indices1, indices2), "cmcent"]], "NORA center distance" )
+
 
 		#END	
 
@@ -852,14 +890,14 @@ class CanvasFrame(wx.Frame):
 			am = self.angMom(2)
 			print("AM ")
 			print(am)
-			self.drawVector(center, center + 100 * am)
+			self.drawVector(center, center + self.multAM * am)
 
 		def OnAngMomTotal(self, event):
 			center = self.getCenter(self.selectObjectsAll())
 			am = self.angMomTotal()
 			print("AM ")
 			print(am)
-			self.drawVector(center, center + 100 * am)
+			self.drawVector(center, center + slef.multAM * am)
 
 
 		def drawVector(self, v1, v2):
@@ -897,7 +935,7 @@ class CanvasFrame(wx.Frame):
 				if self.data[i,0] == x[ind] and self.data[i,1] == y[ind] and self.data[i,2] == z[ind]:
 					print("Found index in data %d" % i)
 					print("velocity is vx=%e,vy=%e,vz=%e" % (self.data[self.numpart+i,0], self.data[self.numpart+i,1], self.data[self.numpart+i,2]))
-					self.drawVector([x[ind],y[ind], z[ind]],[x[ind] +10* self.data[self.numpart+i,0], y[ind]+10* self.data[self.numpart+i,1], z[ind]+10*self.data[self.numpart+i,2] ] )
+					self.drawVector([x[ind],y[ind], z[ind]],[x[ind] +self.multVel* self.data[self.numpart+i,0], y[ind]+self.multVel* self.data[self.numpart+i,1], z[ind]+self.multVel*self.data[self.numpart+i,2] ] )
 					break	
 			#z = thisline.get_zdata()[ind]
 			#print x, y, z
@@ -939,6 +977,8 @@ class CanvasFrame(wx.Frame):
 		def plotMyData(self):
 			#print(self.data.shape)
 			self.axes.cla()
+			#TODO grid	
+			self.axes.grid(False)
 			self.vector = None
 					
 			indices1, indices2 = self.selectObjects()
