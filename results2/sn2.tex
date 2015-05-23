@@ -292,20 +292,27 @@ para los primeros 2 casos (ángulos 90, 60) y para los otros 2 (ángulos 270, 24
 \section*{Evolución del modelo}
 \paragraph{tree500}
 
-Los videos de la evolución del modelo(con nombres sep<SEP>-<DEG>deg-<OBJ>[<PROJAXIS>].mp4 donde <SEP> y <DEG> son la separación y angulo theta1 de setorbdat, <OBJ> = 2ob para los 2 objetos, e para el modelo esferico y d paar el modelo con disco. [<PROJAXIS>] (opcional) es línea de visión ):
+Los videos de la evolución del modelo(con nombres $sep<SEP>-<DEG>deg-<OBJ>[<PROJAXIS>].mp4$ donde $<SEP>$ y $<DEG>$ son la separación y angulo theta1 de setorbdat, $<OBJ>$ = 2ob para los 2 objetos(solo bulbo y disco), e para el modelo esférico(solo bulbo) y d para el modelo con disco(solo bulbo y disco). $[<PROJAXIS>]$ (opcional) es línea de visión )
+están en el repositorio:
+\url{https://github.com/beevageeva/simnum2/tree/master/results2/videos}
 \small
 \begin{verbatim}
-sep10-90deg-2ob.mp4  sep10-90deg-doy.mp4   sep20-270deg-dox.mp4  sep20-270deg-e.mp4  sep5-90deg-dox.mp4  sep5-90deg-eox.mp4
-sep10-90deg-dox.mp4  sep20-270deg-2ob.mp4  sep20-270deg-doy.mp4  sep5-90deg-2ob.mp4  sep5-90deg-doy.mp4  sep5-90deg-eoy.mp4
+sep10-90deg-2ob.mp4 sep10-90deg-dox.mp4 sep10-90deg-doy.mp4 sep10-90deg-e.mp4 sep20-270deg-2ob.mp4
+sep20-270deg-dox.mp4 sep20-270deg-doy.mp4 sep20-270deg-e.mp4 sep5-90deg-2ob.mp4 sep5-90deg-dox.mp4
+sep5-90deg-doy.mp4 sep5-90deg-eox.mp4 sep5-90deg-eoy.mp4
 \end{verbatim}
 
 \normalsize
 
 
 
-Voy a representar los primeros encuentros (el modelo esférico está atravesando el disco - en caso de la sepración = 5 el primer encuentro pasa en el modelo 1) y el último (modelo 39)
+Voy a representar los primeros encuentros (el modelo esférico está atravesando el disco - en caso de la sepración = 5 el primer encuentro pasa en el modelo 1) y el penúltimo (modelo 39)
+\tiny Quería representar el último modelo, pero me equivoqué cuando generé las imágenes(para separación = 5 y 10) y no las rehice porque son muy parecidos. Además para separación = 20 la simulación se colgó y solo se se calcularon 236 modelos(en lugar de 300)
+
+\normalsize
 La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numModel = 11.46 *  numModel
-(en el caso de la separación = 5 hay 40 modelos con numModel = 0..39)
+(en el caso de la separación = 5 hay 41 modelos con numModel = 0..40)
+
 
 
 \begin{figure}[!ht]
@@ -411,6 +418,22 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
 
 \clearpage
 \newpage
+
+Cuando el disco es perpendicular al plano de la órbita (ángulo = 90, 270) 
+durante la evolución los objetos tienen simétria  radial vistos en el plano yoz(línea de vision ox). 
+Cuanto menor es la separación inicial el objeto esférico es más compacto y tiene mayor velocidad relativa al objeto con disco en el primer encuentro y lo va a atravesar con mayor velocidad atrayendo particulas de este (cartwheel: ver las imagenes del disco visto en la dirección ox - para menor separación el anillo hueco es mas pronunciado)
+Cuando el disco no es perpendicular al plano de la órbita , la velocidad de rotación del disco va a tener una componente en la dirección ox que se va a sumar o restar a la velocidad del otro objeto dependiendo del sentido de rotación (las imágenes del disco en el plano yoz de los ángulos 60 y 270 no tienen más simetría radial, pero las imágenes al largo de la línea ox de los objetos en el caso  ángulo = 60 son imágenes en espejo de los objetos en el caso ángulo = 270) 
+En los encuentros posteriores las partículas del objeto esférico que no se han escapado van a tener menos velocidad y el anillo cartwheel va a desaparecer. 
+
+Mirando Ebind en nora vemos que del objeto con disco se escapan mucho menos partículas que en el objeto esférico porque es mas masivo y tiene mas energia potencial y la mayor parte de las partículas se van en los primeros 2 encuentros 
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{ebindsep5.png}
+ \caption{\emph{ Separación = 5 , ángulo = 90 grados,la primera fila: Ebind para el modelo con disco, la segunda Ebind para el modelos esférico, las particulas con energía positiva se van a escapar. Las columnas representan modelo 1,2,40.No parece que haya muchas mas partículas que se escapan en el último modelo comparado con el modelo 2 }}
+\end{figure}
+
+
 El sistema no alcanza el equilibrio. Miramos el gráfico del radio para varios valores de la fracción de masa y comprobamos si se cumple T. virial
 
 \begin{figure}[!ht]
@@ -425,7 +448,7 @@ El sistema no alcanza el equilibrio. Miramos el gráfico del radio para varios v
  \caption{\emph{ Separación = 5 , ángulo = 90 grados,T. virial no se cumple }}
 \end{figure}
 
-En realidad el objeto con disco no se expande tanto: algunas partículas se escapan pero el disco se hace cada vez mas grueso hasta que se convierta  en  una esfera. Comprobamos si ahora se parece más a una elíptica mirando la relación del brillo superficial con $r^4$ y la dispersión de velocidad frente a la velocidad en nora
+En realidad el objeto con disco no se expande tanto: algunas partículas se escapan, pero el disco se hace cada vez mas grueso hasta que se convierta  en  una esfera con el radio aprox igual al radio inicial del disco. Comprobamos si ahora se parece más a una elíptica mirando la relación del brillo superficial con $r^4$ y la dispersión de velocidad frente a la velocidad en nora
 
 \begin{figure}[!ht]
  \centering
