@@ -108,13 +108,9 @@ def getCMCenterAll(modelNumbers):
 		traceback.print_exc(file=sys.stdout)
 
 
-def getCenter(modelNumbers, indices1, indices2, str1, str2, str3):
+#TODO this assumes no need for bodsreloc and modelNumbers in asc order
+def getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2 , str1, str2, str3):
 
-	#TODO this assumes no need for bodsreloc and modelNumbers in asc order
-	firstInd1 = np.min(indices1)
-	firstInd2 = np.min(indices2)
-	lastInd1 = np.max(indices1)
-	lastInd2 = np.max(indices2)
 
 	if useCalcValues:
 		savefilename = "ext_%s-%d-%d-%d-%d.txt" % (str2, firstInd1, firstInd2, lastInd1, lastInd2)	
@@ -175,7 +171,7 @@ def getCenter(modelNumbers, indices1, indices2, str1, str2, str3):
 			#print("--------------------------------00")
 			#print(child.after)
 			#print("--------------------------------000")
-			child.sendline("bodsrange %d %d" % (firstInd1+1, lastInd1+1))
+			child.sendline("bodsrange %d %d" % (firstInd1, lastInd1))
 			child.expect (['nora>>',pexpect.EOF])  
 			#print("--------------------------------bodsrange")
 			#print(child.before)
@@ -191,7 +187,7 @@ def getCenter(modelNumbers, indices1, indices2, str1, str2, str3):
 			#print("--------------------------------2")
 			#print(child.after)
 			#print("--------------------------------3")
-			child.sendline("bodsrange  %d %d" % (firstInd2+1, lastInd2+1))
+			child.sendline("bodsrange  %d %d" % (firstInd2, lastInd2))
 			child.expect (['nora>>',pexpect.EOF])  
 			#print("--------------------------------0111")
 			#print(child.before)
@@ -213,11 +209,11 @@ def getCenter(modelNumbers, indices1, indices2, str1, str2, str3):
 		import sys, traceback
 		traceback.print_exc(file=sys.stdout)
 
-def getMedcent(modelNumbers, indices1, indices2):
-	return getCenter(modelNumbers, indices1, indices2, "median position", "medcent", "medcntr")
+def getMedcent(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2):
+	return getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2, "median position", "medcent", "medcntr")
 
-def getCMcent(modelNumbers, indices1, indices2):
-	return getCenter(modelNumbers, indices1, indices2, "cm position", "cmcent", "cmcntr")
+def getCMcent(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2):
+	return getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2, "cm position", "cmcent", "cmcntr")
 
 
 def getTreelog3ValuesAndTimeToModel(regexp3Vals):
@@ -274,7 +270,86 @@ def getTreelogCMPos():
 	#cmpos =  -8.104465485E+01  5.134593323E-02 -3.790937364E-01
 	return getTreelog3ValuesAndTimeToModel("cmpos\s+=\s+([0-9+-Ee.]+)\s+([0-9+-Ee.]+)\s+([0-9+-Ee.]+)")
 	
+def getTreelogCMVel():
+	#cmvel =   1.913200617E-01  1.114703700E-04  5.081008421E-04
+	return getTreelog3ValuesAndTimeToModel("cmvel\s+=\s+([0-9+-Ee.]+)\s+([0-9+-Ee.]+)\s+([0-9+-Ee.]+)")
 
+def getrm(modelNumbers, firstInd, lastInd):
+	import pexpect,re,os
+	import os
+
+	modelname = "TREEBOD"	
+	RM = 1000
+	outFolder = "ext_rm-%d-%d" % (firstInd, lastInd)
+
+	if os.path.exists(outFolder):
+		print("Folder %s already exists , using files inside.." % outFolder)
+		return outFolder
+	os.mkdir(outFolder)	
+	
+	
+	files = {}
+	
+	
+	def writeToFile(name, string):
+		if(not name in files):
+			files[name] = open(os.path.join(outFolder,name), "w") 
+		files[name].write(string)
+	
+	
+	def closeAllFiles():
+		for name in files:
+			files[name].close()
+	
+	
+	def getRad(s):
+		print("output start")
+		print(s)
+		print("output end")
+		lines = s.split("\n")
+		mlexpr = re.compile("#FILE\s+%s\s+MODEL\s+(\d+)\s+\d+\s+\d+" % modelname)
+		fexpr = re.compile("#FRM\s+:" + "\s+([\d.]+)" * 8)
+		rexpr = re.compile("#Rm\s+:" + "\s+([\dE.\+-]+)" * 8)
+		#FRM
+		for l in lines:
+			
+			print("Line is %s" %l)
+			g = mlexpr.match(l)
+			if(g):
+				numbermodel = g.group(1)
+				print(numbermodel)
+			else:
+				g = fexpr.match(l)
+				if(g):
+					keys=g.groups()
+					
+				else:
+					g = rexpr.match(l)
+					if(g):
+						vals=g.groups()
+						for i in range(len(keys)):
+							print("%s -> %s" % (keys[i], vals[i]))
+							writeToFile(keys[i], "%s\t%s\n" % (numbermodel,vals[i]))
+	
+	child = pexpect.spawn("./nora")
+	child.expect("nora>>")
+	child.sendline("data %s %d %d 1" % (modelname, min(modelNumbers), max(modelNumbers)))
+	child.expect("nora>>")
+	print(child.before)
+	for k in range(len(modelNumbers)):
+		i = modelNumbers[k]
+		print("*****************i=%d" %i)
+		child.sendline("getmodel %d" % i)
+		child.expect("getmodel>>.+nora>>")
+		
+		child.sendline("bodsrange %d %d" % (firstInd, lastInd))
+		child.expect ('nora>>')
+		child.sendline("Rm %d"%RM)
+		child.expect ('nora>>')
+		getRad(child.before)
+	child.close()
+	closeAllFiles()
+	return outFolder
 
 
 

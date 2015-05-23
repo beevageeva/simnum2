@@ -58,8 +58,8 @@ def plot2d(values, title):
 	plt.show(block=False)
 	if plotLegend:
 		#plt.legend(loc='upper center', bbox_to_anchor=(1, 0.5))
-		plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
-           ncol=2, mode="expand", borderaxespad=0.)
+		#plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,ncol=2, mode="expand", borderaxespad=0.).draggable()
+		plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3).draggable()
 
 
 
@@ -258,6 +258,8 @@ class CanvasFrame(wx.Frame):
 				self.Bind(wx.EVT_MENU, self.OnEkCalc2, m_showObjects)
 				m_showObjects = menu.Append(-1, "Ek total", "Ek total")
 				self.Bind(wx.EVT_MENU, self.OnEkCalcTotal, m_showObjects)
+				m_showObjects = menu.Append(-1, "Make images", "Make images")
+				self.Bind(wx.EVT_MENU, self.OnMakeImages, m_showObjects)
 				menuBar.Append(menu, "&All (calc)")
 		
 				menu = wx.Menu()
@@ -281,6 +283,12 @@ class CanvasFrame(wx.Frame):
 				self.Bind(wx.EVT_MENU, self.OnExtTreelogAM, m_showObjects)
 				m_showObjects = menu.Append(-1, "Treelog cmpos", "Treelog cmpos")
 				self.Bind(wx.EVT_MENU, self.OnExtTreelogCMPos, m_showObjects)
+				m_showObjects = menu.Append(-1, "Treelog cmvel", "Treelog cmvel")
+				self.Bind(wx.EVT_MENU, self.OnExtTreelogCMVel, m_showObjects)
+				m_showObjects = menu.Append(-1, "RM1", "RM1")
+				self.Bind(wx.EVT_MENU, self.OnExtRm1, m_showObjects)
+				m_showObjects = menu.Append(-1, "RM2", "RM2")
+				self.Bind(wx.EVT_MENU, self.OnExtRm2, m_showObjects)
 
 				menuBar.Append(menu, "&All (ext)")
 
@@ -341,21 +349,16 @@ class CanvasFrame(wx.Frame):
 				# TOOLBAR comment this out for no toolbar
 				self.toolbar = NavigationToolbar2Wx(self.canvas)
 				self.toolbar.Realize()
-				if wx.Platform == '__WXMAC__':
-						# Mac platform (OSX 10.3, MacPython) does not seem to cope with
-						# having a toolbar in a sizer. This work-around gets the buttons
-						# back, but at the expense of having the toolbar at the top
-						self.SetToolBar(self.toolbar)
-				else:
-						# On Windows platform, default window size is incorrect, so set
-						# toolbar width to figure width.
-						tw, th = self.toolbar.GetSizeTuple()
-						fw, fh = self.canvas.GetSizeTuple()
-						# By adding toolbar in sizer, we are able to put it at the bottom
-						# of the frame - so appearance is closer to GTK version.
-						# As noted above, doesn't work for Mac.
-						self.toolbar.SetSize(wx.Size(fw, th))
-						vsizer.Add(self.toolbar, 0, wx.LEFT | wx.EXPAND)
+#				# On Windows platform, default window size is incorrect, so set
+#				# toolbar width to figure width.
+#				tw, th = self.toolbar.GetSizeTuple()
+#				fw, fh = self.canvas.GetSizeTuple()
+#				# By adding toolbar in sizer, we are able to put it at the bottom
+#				# of the frame - so appearance is closer to GTK version.
+#				# As noted above, doesn't work for Mac.
+#				self.toolbar.SetSize(wx.Size(fw, th))
+				vsizer.Add(self.toolbar, 0, wx.LEFT | wx.EXPAND)
+				self.SetToolBar(self.toolbar)
 				# update the axes menu on the toolbar
 				self.toolbar.update()
 
@@ -366,6 +369,8 @@ class CanvasFrame(wx.Frame):
 				self.Fit()
 				#TODO not hardcode this
 				self.SetSize((1000,800))
+				#changed toolbar?
+				#self.SetSize((1000,853))
 				self.plotMyData()
 				#TODO why legend does not show first line plotted
 				self.repaint()	
@@ -559,9 +564,9 @@ class CanvasFrame(wx.Frame):
 				if(item[1][1] == objNumber and item[1][0] ):
 					massPart = item[1][2]	
 					indices =np.arange(lastindex, item[0])
-					ek+=massPart * np.sum(self.data[indices,0]**2 + self.data[indices,1]**2 + self.data[indices,2]**2  )
+					ek+=massPart * np.sum(self.data[indices + self.numpart,0]**2 + self.data[indices + self.numpart,1]**2 + self.data[indices + self.numpart,2]**2  )
 				lastindex = item[0]
-			return ek
+			return ek * 0.5
 
 		def  ekAll(self, testVis=True):
 			lastindex = 0
@@ -570,9 +575,9 @@ class CanvasFrame(wx.Frame):
 				if( (item[1][0] and testVis) or not testVis):
 					massPart = item[1][2]	
 					indices =np.arange(lastindex, item[0])
-					ek+=massPart * np.sum(self.data[indices,0]**2 + self.data[indices,1]**2 + self.data[indices,2]**2  )
+					ek+=massPart * np.sum(self.data[indices + self.numpart,0]**2 + self.data[indices + self.numpart,1]**2 + self.data[indices + self.numpart,2]**2  )
 				lastindex = item[0]
-			return ek
+			return ek * 0.5
 
 
 		#Ek end
@@ -647,6 +652,48 @@ class CanvasFrame(wx.Frame):
 		def calcEkTotal(self, testVis = True):
 			return self.performForAllModels(lambda: self.ekAll(testVis), "ek3%s.txt" % ( self.selectObjectsStr( testVis)  ))
 
+		def plotRm(self, objNumber):	
+			files = ["0.20" , "0.50", "0.80", "0.90", "0.99"]
+			indices = self.selectObject(objNumber)
+			from extern import getrm
+			outFolder = getrm(self.modelNumbers, min(indices)+1, max(indices)+1)
+			plotData = []
+			import os.path
+			for f in files:
+				data = np.loadtxt(os.path.join(outFolder,f))
+				plotData.append([data[:,0], data[:,1], f])
+			plot2d(plotData,"RM%d" % objNumber)
+
+		def OnExtRm1(self, event):
+			self.plotRm(1)
+	
+		def OnExtRm2(self, event):
+			self.plotRm(2)
+
+		def OnMakeImages(self, event):
+			import os
+			#TODO do not display  images : no repaint would work?
+			#matplotlib.use('Agg')
+			def createFolder(dirname_base="out"):
+				dirExists = True
+				i = 0
+				dirname = "%s_%i" % (dirname_base, i)
+				while os.path.exists(dirname):
+					i +=1
+					dirname = "%s_%i" % (dirname_base, i)
+				os.mkdir(dirname)
+				return dirname
+			dirname = createFolder("outImages")
+			oldCNI = self.currentModelNumberIndex
+			for i in range(len(self.modelNumbers)):
+				self.currentModelNumberIndex = i
+				self.reloadModel()
+				#something has changed(toolbar?) and imgs will be 1000x697!
+				#self.figure.savefig(os.path.join(dirname, "Fig%03d" % self.currentModelNumberIndex)) 
+				self.figure.savefig(os.path.join(dirname, "Fig%03d" % self.currentModelNumberIndex), figsize=(12.5,9.375), dpi=80) 
+			self.currentModelIndex = oldCNI
+			self.reloadModel()
+			#matplotlib.use('WXAgg')
 
 
 		def OnAngMom1(self, event):
@@ -696,7 +743,7 @@ class CanvasFrame(wx.Frame):
 		def OnEkCompare(self, event):
 			from extern import getTreelogE
 			ee = getTreelogE()	
-			plot2d([[range(len(self.modelNumbers)), self.calcEkTotal(False), "calc"], [ee[0], ee[1][:,1], "ext"]], "Ek total compare")
+			plot2d([[range(len(self.modelNumbers)), self.calcEkTotal(False), "calc"], [ee[0], ee[1][:,1], "treelog"]], "Ek total compare")
 
 
 
@@ -704,25 +751,12 @@ class CanvasFrame(wx.Frame):
 		def OnExtEnergy(self, event):
 			from extern import getTreelogE
 			res = getTreelogE()	
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.title("Energies from TREELOG")
-			plt.plot(res[0], res[1][:,0], 'k', label="Et")
-			plt.plot(res[0], res[1][:,1], 'r', label="Ek")
-			plt.plot(res[0], res[1][:,2], 'b', label="Ep")
-			plt.legend()
-			plt.draw()
-			plt.show(block=False)
+			plot2d([ [res[0], res[1][:,0] , "Et"],  [res[0], res[1][:,1] , "Ek"], [res[0], res[1][:,2] , "Ep"]], "Energies from TREELOG")
 
 		def OnExtVirialTh(self, event):
 			from extern import getTreelogE
 			res = getTreelogE()	
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.title("Virial Th from TREELOG")
-			plt.plot(res[0], 2 * res[1][:,1] + res[1][:,2], 'k')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([res[0], 2 * res[1][:,1] + res[1][:,2]], "Virial Th from TREELOG(2Ek+Ep)")
 
 
 		def OnExtTreelogAM(self, event):
@@ -730,12 +764,12 @@ class CanvasFrame(wx.Frame):
 			res = getTreelogAM()
 			am = np.sqrt(res[1][:,0]**2 + res[1][:,1]**2 + res[1][:,2]**2)	
 			#plot without AM **2
-			#plot2d([res[0], am], "Treelog am")
+			plot2d([res[0], am], "Treelog am")
 			#plot WITH AM **2
-			from extern import getAngMomAll
-			restam = getAngMomAll()
-			amtam = np.sqrt(restam[1]**2 + restam[2]**2 + restam[3]**2)
-			plot2d([[res[0], am, "TREELOG"],[restam[0],amtam, "TREEAM"]], "Ext AM")
+#			from extern import getAngMomAll
+#			restam = getAngMomAll()
+#			amtam = np.sqrt(restam[1]**2 + restam[2]**2 + restam[3]**2)
+#			plot2d([[res[0], am, "TREELOG"],[restam[0],amtam, "TREEAM"]], "Ext AM")
 			
 
 		def OnExtTreelogCMPos(self, event):
@@ -748,54 +782,38 @@ class CanvasFrame(wx.Frame):
 			from extern import getCMCenterAll
 			plot2d([[range(len(self.modelNumbers)), getCMCenterAll(self.modelNumbers), "NORA"], [res[0], am, "TREELOG"]], "Ext CMPos")
 			
+		def OnExtTreelogCMVel(self, event):
+			from extern import getTreelogCMVel
+			res = getTreelogCMVel()
+			am = np.sqrt(res[1][:,0]**2 + res[1][:,1]**2 + res[1][:,2]**2)	
+			plot2d([res[0], am], "CM velocity from treelog")
 
 
 
 		#TODO repeated code in the following 3 functions			
 		def OnAngMomCompare1(self, event):
 			print("AM COMPARE")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.plot(range(len(self.modelNumbers)), self.calcAngMom1(False), 'k')
 			from extern import getAngMom
 			noraam = getAngMom(0)	
-			plt.plot(noraam[0], noraam[1], 'y')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([[range(len(self.modelNumbers)), self.calcAngMom1(False), "calc"],[noraam[0], noraam[1], "TREEAM"]], 'AM1 Compare')
 
 		def OnAngMomExt1(self, event):
 			print("AM EXT")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.cla()
 			from extern import getAngMom
 			noraam = getAngMom(0)	
-			plt.plot(noraam[0], noraam[1], 'k')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([noraam[0], noraam[1]], 'AM1 from TREEAM')
 
 		def OnAngMomCompare2(self, event):
 			print("AM COMPARE 2")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.cla()
-			plt.plot(range(len(self.modelNumbers)),self.calcAngMom2(False), 'k')
 			from extern import getAngMom
 			noraam = getAngMom(1)	
-			plt.plot(noraam[0], noraam[1], 'y')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([[range(len(self.modelNumbers)), self.calcAngMom2(False), "calc"],[noraam[0], noraam[1], "TREEAM"]], 'AM2 Compare')
 
 		def OnAngMomExt2(self, event):
 			print("AM EXT 2")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.cla()
 			from extern import getAngMom
 			noraam = getAngMom(1)	
-			plt.plot(noraam[0], noraam[1], 'k')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([noraam[0], noraam[1]], 'AM2 from TREEAM')
 
 
 		def OnAngMomCompareAll(self, event):
@@ -804,7 +822,7 @@ class CanvasFrame(wx.Frame):
 			#COMPARE with treeam
 			from extern import getAngMom
 			noraam = getAngMom(2)	
-			plot2d([[range(len(self.modelNumbers)), self.calcAngMomTotal(False), "calc"],[noraam[0], noraam[1], "TREEAM"] ], "AM Comp")
+			plot2d([[range(len(self.modelNumbers)), self.calcAngMomTotal(False), "calc"],[noraam[0], noraam[1], "TREEAM"] ], "AM Total Comp")
 
 #			#compare with treelog
 #			from extern import getTreelogAM
@@ -817,14 +835,9 @@ class CanvasFrame(wx.Frame):
 
 		def OnAngMomExtAll(self, event):
 			print("AM EXT")
-			import matplotlib.pyplot as plt
-			plt.figure(1)
-			plt.cla()
 			from extern import getAngMom
 			noraam = getAngMom(2)	
-			plt.plot(noraam[0], noraam[1], 'k')
-			plt.draw()
-			plt.show(block=False)
+			plot2d([noraam[0], noraam[1]], 'AM Total from TREEAM')
 
 		def  OnCenterDistanceCalc(self, event):
 			print("MEDCENT CALC")
@@ -843,18 +856,18 @@ class CanvasFrame(wx.Frame):
 			print("MEDCENT EXT")
 			indices1, indices2 = self.selectObjects()
 			from extern import getMedcent
-			plot2d([range(len(self.modelNumbers)), getMedcent(self.modelNumbers, indices1, indices2)], "medcent Nora" )
+			plot2d([range(len(self.modelNumbers)), getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1)], "medcent Nora" )
 
 		def  OnCenterDistanceCompare(self, event):
 			print("MEDCENT COMPARE")
 			indices1, indices2 = self.selectObjects()
 			from extern import getMedcent
 			#plot WITHOUT treeorb dist
-			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, indices1, indices2), "nora medcent"] ], "medcent compare")
+			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora medcent"] ], "medcent compare")
 			#plot WITH treeorb dist
-#			from extern import getTreeorbDist
-#			d3 = getTreeorbDist()
-#			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, indices1, indices2), "nora medcent"] , [d3[0], d3[1], "Treeorb"] ], "medcent compare")
+			#from extern import getTreeorbDist
+			#d3 = getTreeorbDist()
+			#plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora medcent"] , [d3[0], d3[1], "Treeorb"] ], "medcent compare")
 
 
 
@@ -862,20 +875,25 @@ class CanvasFrame(wx.Frame):
 			print("CMCENT EXT")
 			indices1, indices2 = self.selectObjects()
 			from extern import getCMcent
-			plot2d([range(len(self.modelNumbers)), getCMcent(self.modelNumbers, indices1, indices2)], "CM Nora" )
+			plot2d([range(len(self.modelNumbers)), getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1)], "CM Nora" )
 
 
 		def  OnCenterOfMassDistanceCompare(self, event):
 			print("CMCENT COMPARE")
 			from extern import getCMcent
 			indices1, indices2 = self.selectObjects()
-			plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, indices1, indices2), "nora"]], "CM compare" )
+			#plot WITHOUT treeorb dist
+			#plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora"]], "CM compare" )
+			#plot WITH treeorb dist
+			from extern import getTreeorbDist
+			d3 = getTreeorbDist()
+			plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc" ], [range(len(self.modelNumbers)),getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora"] , [d3[0], d3[1], "Treeorb"] ], "CM compare")
 
 		def OnCenterDistanceExtCompare(self, event):
 			print("EXT center distance COMPARE")
 			indices1, indices2 = self.selectObjects()
 			from extern import getMedcent, getCMcent
-			plot2d([[range(len(self.modelNumbers)), getMedcent(self.modelNumbers, indices1, indices2), "medcent"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, indices1, indices2), "cmcent"]], "NORA center distance" )
+			plot2d([[range(len(self.modelNumbers)), getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "medcent"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "cmcent"]], "NORA center distance" )
 
 
 		#END	
@@ -954,10 +972,6 @@ class CanvasFrame(wx.Frame):
 
 		def repaint(self):
 				self.canvas.draw()
-				#if(self.m_legend.IsChecked()):
-				#makes more sense to check m_legend in bind function changeLegendVisible
-				if(not (self.axes.legend_ is None)):
-					self.axes.legend().draggable()
 
 		def OnClose(self, event):
 				dlg = wx.MessageDialog(self,

@@ -143,22 +143,23 @@
 
 
 \begin{document}
-
+\title{Colisión de un sistema con disco con un satélite esférico con relación de masas 10:1 en una órbita polar}
 \section*{Condiciones iniciales}
 
 \paragraph{Unidades}
-Se usa un sistema de unidades en cual G = 1, [M] = ...  [l] = 1kpc $\implies$ [v]= ... [t] = ....
+Se usa un sistema de unidades en cual G = 1, [M] = $10^{11} M_{Sol}$, [l] = 1kpc $\implies$ [v]= 655.85 km/s [t] = 1.49My
 
 
 \subsection*{los modelos individuales}
 
 \begin{description}
-\item modelo elíptico obtenido con isomodr4 (...) 50000 particulas(10000 en el bulbo y 40000 en el halo)
-\item modelo con disco obtenido con ... (...) 20000 particulas (8000 en el disco, 4000 en el bulbo, 8000 en el halo) con masa total = 1
-\item el modelos elíptico se escala a una masa total 0.1 (cuando se escalan los modelos el radio se escala también para que se cumpla la relación: $\frac{R_1}{R_2} = \sqrt{\frac{M_1}{M_2}}$). Es mejor escalar el segundo modelo antes de ponerlos en órbita usando \textbf{scale} y no especificando estas relaciones en setorbdat porque parece que no funciona
+\item Uso los modelos esféricos y con disco obtenidos en las prácticas anteriores (ya escalados con masa total 1)
+\item El modelo elíptico obtenido con isomodr4 (Smulders \& Balcells) tiene 50000 particulas(10000 en el bulbo y 40000 en el halo). El halo usa un modelo Hernquist y el bulbo un modelo Jaffe, la relacion de masas es $M_{halo}:M_{bulbo} = 3:1$
+\item La galáxia con disco(espiral) obtenido con el modelo Widrow \& Dubinski tiene 20000 particulas (8000 en el disco, 4000 en el bulbo, 8000 en el halo) 
+\item El modelo elíptico se escala a una masa total 0.1 (cuando se escalan los modelos el radio se escala también para que se cumpla la relación: $\frac{R_1}{R_2} = \sqrt{\frac{M_1}{M_2}}$). Es mejor escalar el segundo modelo antes de ponerlos en órbita usando \textbf{scale} y no especificando estas relaciones en setorbdat porque parece que no funciona
 \item los parámetros que se van a configurar para tree500 en TREEPAR: dt y eps dependen de estos modelos iniciales
 \begin{description}
-\item Calculamos dt = $\frac{1}{20}\sqrt{\frac{R^3}{M}}$ ,  eps = $0.2 R$ donde R es el radio de media masa y M es la media masa de la parte luminos elijiendo los valores mas pequeños de los 2 modelos
+\item En la práctica usamos valores máximos para  dt = $\frac{1}{20} t_{cruce} = \frac{1}{20} \sqrt{\frac{R^3}{M}}$ y eps = $0.2 R$ donde R es el radio de media masa y M es la media masa de la parte luminos elijiendo los valores mas pequeños de los 2 modelos
 \item
 \small
 \begin{verbatim}
@@ -204,7 +205,8 @@ Se usa un sistema de unidades en cual G = 1, [M] = ...  [l] = 1kpc $\implies$ [v
 \normalsize
 \item $R_1$ = 2.59E+00, $M_1$ = 0.5 * 1.116E-01 $\implies$ $dt_1$ = 0.8822721105537292 y $eps_1$ = 0.518
 \item $R_2$ = 2.60E+00, $M_2$ = 0.5 * 1.875E-02 $\implies$ $dt_2$ = 1.5308385501634936 y $eps_2$ = 0.52
-\item Con unos valores de dt = 0.8822721105537292 y eps = 0.518 la simulación debería ir bien , pero los valores calculados con estas fórmulas  son valores máximos para estos  parámetros , elijiendo unos valores mas pequeños la simulación tardará más
+
+\item Con unos valores de dt = 0.8822721105537292 y eps = 0.518 la simulación debería ir bien, elijiendo unos valores mas pequeños la simulación es más realista, pero tardará más (explicación en Clase2.pdf)
 \item yo elegí dt = 0.1146314 y eps = 0.276
 
 \end{description}
@@ -278,7 +280,7 @@ Los modelos están aliniados en la direccion ox
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.2]{inimoddisco_sep5.png}
- \caption{\emph{El disco y bulbo del primer modelo en el momento inicial visto desde la dirección del otro objeto \\
+ \caption{\emph{El disco y bulbo del primer modelo en el momento inicial visto desde la dirección del otro objeto (y el vector de la velocidad en un punto cualquiera) \\
 para los primeros 2 casos (ángulos 90, 60) y para los otros 2 (ángulos 270, 240 - el spin en la otra dirección)}}
 \end{figure}
 
@@ -289,6 +291,15 @@ para los primeros 2 casos (ángulos 90, 60) y para los otros 2 (ángulos 270, 24
 \newpage
 \section*{Evolución del modelo}
 \paragraph{tree500}
+
+Los videos de la evolución del modelo(con nombres sep<SEP>-<DEG>deg-<OBJ>[<PROJAXIS>].mp4 donde <SEP> y <DEG> son la separación y angulo theta1 de setorbdat, <OBJ> = 2ob para los 2 objetos, e para el modelo esferico y d paar el modelo con disco. [<PROJAXIS>] (opcional) es línea de visión ):
+\small
+\begin{verbatim}
+sep10-90deg-2ob.mp4  sep10-90deg-doy.mp4   sep20-270deg-dox.mp4  sep20-270deg-e.mp4  sep5-90deg-dox.mp4  sep5-90deg-eox.mp4
+sep10-90deg-dox.mp4  sep20-270deg-2ob.mp4  sep20-270deg-doy.mp4  sep5-90deg-2ob.mp4  sep5-90deg-doy.mp4  sep5-90deg-eoy.mp4
+\end{verbatim}
+
+\normalsize
 
 
 
@@ -315,6 +326,17 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
  \caption{\emph{ ángulo = 90 grados, el objeto con disco visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
 \end{figure}
 
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep590deg-2oy.png}
+ \caption{\emph{ ángulo = 90 grados, el objeto esférico visto en la dirección oy(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep590deg-2ox.png}
+ \caption{\emph{ ángulo = 90 grados, el objeto esférico visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
 
 \begin{figure}[!ht]
  \centering
@@ -377,9 +399,92 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.2]{sep10.png}
- \caption{\emph{ Separación = 10 , ángulo = 90 grados, el objeto con disco visto en la dirección ox(solo parte luminosa) modelo 2,3,99 }}
+ \caption{\emph{ Separación = 10 , ángulo = 90 grados, solo la parte luminosa, primera columna los 2 objetos, la segunda el objeto con disco visto en la dirección ox, la tercera el objeto con disco visto en la dirección oy, modelos 2,3,99 }}
 \end{figure}
 
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep20.png}
+ \caption{\emph{ Separación = 20 , ángulo = 270 grados,solo la parte luminosa, primera columna los 2 objetos, la segunda el objeto con disco visto en la dirección ox, la tercera el objeto con disco visto en la dirección oy, modelos 5,6,235 }}
+\end{figure}
+
+\clearpage
+\newpage
+El sistema no alcanza el equilibrio. Miramos el gráfico del radio para varios valores de la fracción de masa y comprobamos si se cumple T. virial
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{rmsep5.png}
+ \caption{\emph{ Separación = 5 , ángulo = 90 grados,Rm obtenido en nora: primera fila el objeto con disco, la segunda el modelo esférico, la primera columna el objeto entero, la segunda solo la parte luminosa }}
+\end{figure}
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.4]{vt.png}
+ \caption{\emph{ Separación = 5 , ángulo = 90 grados,T. virial no se cumple }}
+\end{figure}
+
+En realidad el objeto con disco no se expande tanto: algunas partículas se escapan pero el disco se hace cada vez mas grueso hasta que se convierta  en  una esfera. Comprobamos si ahora se parece más a una elíptica mirando la relación del brillo superficial con $r^4$ y la dispersión de velocidad frente a la velocidad en nora
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.3]{noraellip.png}
+ \caption{\emph{ Separación = 5 , ángulo = 90 grados, primera fila: sbr 2 2, segunda fila: rotc 0 radio 0.3, primera columna en el momento inicial, la segunda en el momento final, solo la parte luminosa  }}
+\end{figure}
+
+Aunque la dispersión de velocidad crece, sobre todo en el centro, a radio mas grande la velocidad de rotación es mayor que la dispersión de velocidadEl logaritmo del brillo superficial no depende de forma lineal de $r^4$ (la relación de  Vaucouleurs no se comprueba )
+El modelo con disco sigue teniendo un disco(con velocidad ordenada - de rotación)
+
+\paragraph{El centro de masas} se va desplazando en la dirección positiva de ox con una velocidad cási constante.(cuando se crea el modelo inicial: en t=0 con setorb los 2 objetos están aliniados en la dirección ox, el centro de masas de los 2 objetos está casi en el origen y a la velocidad de todas las particulas le añade $-\vec{vr}/2 $ (el signo negativo porque van hacía el centro), pero el objeto con disco que es 10 veces más masivo  está situado en la parte negativa de ox y el modelo esférico en la parte positiva)
+
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{cmpos-vel.png}
+ \caption{\emph{ Separación = 5 , ángulo = 90 grados, la distancia del centro de masas con respecto al origen (los valores calculados con cmcent en nora son exactamente iguales a los de treelog) que crece lineal en el tiempo (velocidad constante) y la velocidad del centro de masas obtenida de treelog }}
+\end{figure}
+
+\paragraph{La energía} total se conserva y es positiva (las particulas se escapan)
+
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep590deg-energy.png}
+ \caption{\emph{ Separación = 5 , ángulo = 90 grados, izquierda-derecha, arriba-abajo: Energias de treelog, energía cinética (comparación treelog y calculado en python - las diferencias se deben a que noutlog = 2*noutbod), energías cinéticas de los 2 objetos - todas las partículas icluyendo halos }}
+\end{figure}
+
+
+
+\clearpage
+\newpage
+
+\section*{Código python}
+\begin{description}
+\item makeAsc.py, nora.py, extern.py tienen que estar en la misma carpeta con los ficheros de salida de tree500 : TREE* , además los binarios xvp-asc y nora
+\item determinar el numero de módelos de TREEOUT o del output de tree500
+\item ejecutar 
+\begin{verbatim}
+	python makeAsc.py --numModels=41
+\end{verbatim}
+\item donde 41 es el número de modelos. Eso va a crear unos ficheros Model*.txt  que lee nora.py después
+\begin{verbatim}
+	python nora.py
+\end{verbatim}
+\item nora.py e un programa python que usa las librerías numpy, matplotlib y wx.
+Se pueden seleccionar los grupos de partículas que son visibles y el objeto a que apartenece cada grupo.
+Hay unos botones para cargar los modelos siguientes y anteriores  
+En el menú las funciones del submenú Each se calculan para las particulas visibles del modelo actual 
+Todas las funciones de los submenús  Each y All(calc) y  las funciones que calculan RM y Center (of mass) distance se van a  calcular solo para las partículas visibles, los que calculan momento angular y energía en los submenús All(ext) y All(comp)  se calculan para todas las particulas. 
+La explicación es que el momento angular y energía calculados con las herramientas externas (ver extern.py) son valores de los ficheros de salida TREEAM y TREELOG, pero los valores obtenidos con Rm , medcent y cmcent que se ejecutan en nora se pueden calcular para un cierto rango (bodsrange) 
+
+Las funciones del submenú All(calc) pueden tardar un poco porque se calculan para todos los modelos: se usan ficheros *.txt donde se guardan los valores para no calcularlas siempre, también para algunos calculos en nora: ver el parámetro useCalcValues = True  (y donde se usa) en nora.py y extern.py. 
+Los videos se han obtenido de las imagenes generadas con la función Make images del submenú All(calc)
+Pulsando en una particula(onpick event) se va a representar el vector de la velocidad(multiplicado por una constante que por defecto es 10, se puede cambiar con el slider)
+Hay 2 sliders que representan el valor con cual se multiplica el módulo de la velocidad y momento angular en un instante (en el submenú Each)
+Mirar también el output del programa
+
+\end{description}
 
 
 \end{document}

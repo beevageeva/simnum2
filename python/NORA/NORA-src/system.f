@@ -1,3 +1,0 @@
-	SUBROUTINE system
-	RETURN
-	END
