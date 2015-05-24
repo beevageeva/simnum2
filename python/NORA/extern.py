@@ -109,7 +109,7 @@ def getCMCenterAll(modelNumbers):
 
 
 #TODO this assumes no need for bodsreloc and modelNumbers in asc order
-def getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2 , str1, str2, str3):
+def getCenterDistance(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2 , str1, str2, str3):
 
 
 	if useCalcValues:
@@ -141,7 +141,7 @@ def getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2 , str1, str
 				rx = float(g.group(1))
 				ry = float(g.group(2))
 				rz = float(g.group(3))
-				return np.sqrt(rx**2+ry**2+rz**2)
+				return [rx,ry,rz]
 	
 	
 	try:
@@ -178,10 +178,10 @@ def getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2 , str1, str
 			#print("--------------------------------00")
 			#print(child.after)
 			#print("--------------------------------000")
-			
 		
 			child.sendline(str2)
 			child.expect (["%s>>.+nora>>" % str3,pexpect.EOF])  
+			center1 = getRad(child.after)	
 			#print("--------------------------------medcent")
 			#print(child.before)
 			#print("--------------------------------2")
@@ -196,7 +196,8 @@ def getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2 , str1, str
 			child.expect (["%s>>.+nora>>" % str3 ,pexpect.EOF])  
 			#print("--------------------------------01133")
 			#print(child.before)
-			res[i] = getRad(child.after)
+			center2 = getRad(child.after)
+			res[i] = np.sqrt( (center1[0]- center2[0])**2 + (center1[1]- center2[1])**2 + (center1[2]- center2[2])**2)
 		child.close()
 		if useCalcValues:
 			print("EXT getCenter: Saving to file %s " % savefilename)
@@ -209,11 +210,11 @@ def getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2 , str1, str
 		import sys, traceback
 		traceback.print_exc(file=sys.stdout)
 
-def getMedcent(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2):
-	return getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2, "median position", "medcent", "medcntr")
+def getMedcentDistance(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2):
+	return getCenterDistance(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2, "median position", "medcent", "medcntr")
 
-def getCMcent(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2):
-	return getCenter(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2, "cm position", "cmcent", "cmcntr")
+def getCMcentDistance(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2):
+	return getCenterDistance(modelNumbers, firstInd1, lastInd1, firstInd2, lastInd2, "cm position", "cmcent", "cmcntr")
 
 
 def getTreelog3ValuesAndTimeToModel(regexp3Vals):

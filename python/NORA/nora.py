@@ -42,6 +42,7 @@ def plot2d(values, title):
 	f = plt.figure(1)
 	f.suptitle(title)
 	plt.cla()
+	plt.xlabel("modelNumber")
 	#plt.title(title)
 	#TODO this is a crap
 	isMultArr = hasattr(values[0][0], "__len__")
@@ -855,45 +856,45 @@ class CanvasFrame(wx.Frame):
 		def  OnCenterDistanceExt(self, event):
 			print("MEDCENT EXT")
 			indices1, indices2 = self.selectObjects()
-			from extern import getMedcent
-			plot2d([range(len(self.modelNumbers)), getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1)], "medcent Nora" )
+			from extern import getMedcentDistance
+			plot2d([range(len(self.modelNumbers)), getMedcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1)], "medcent Nora" )
 
 		def  OnCenterDistanceCompare(self, event):
 			print("MEDCENT COMPARE")
 			indices1, indices2 = self.selectObjects()
-			from extern import getMedcent
+			from extern import getMedcentDistance
 			#plot WITHOUT treeorb dist
-			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora medcent"] ], "medcent compare")
+			plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora medcent"] ], "medcent compare")
 			#plot WITH treeorb dist
 			#from extern import getTreeorbDist
 			#d3 = getTreeorbDist()
-			#plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora medcent"] , [d3[0], d3[1], "Treeorb"] ], "medcent compare")
+			#plot2d([[range(len(self.modelNumbers)), self.calcCenterDistance(), "calc" ], [range(len(self.modelNumbers)),getMedcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora medcent"] , [d3[0], d3[1], "Treeorb"] ], "medcent compare")
 
 
 
 		def  OnCenterOfMassDistanceExt(self, event):
 			print("CMCENT EXT")
 			indices1, indices2 = self.selectObjects()
-			from extern import getCMcent
-			plot2d([range(len(self.modelNumbers)), getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1)], "CM Nora" )
+			from extern import getCMcentDistance
+			plot2d([range(len(self.modelNumbers)), getCMcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1)], "CM Nora" )
 
 
 		def  OnCenterOfMassDistanceCompare(self, event):
 			print("CMCENT COMPARE")
-			from extern import getCMcent
+			from extern import getCMcentDistance
 			indices1, indices2 = self.selectObjects()
 			#plot WITHOUT treeorb dist
-			#plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora"]], "CM compare" )
+			plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc"],[range(len(self.modelNumbers)), getCMcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora"]], "CM compare" )
 			#plot WITH treeorb dist
-			from extern import getTreeorbDist
-			d3 = getTreeorbDist()
-			plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc" ], [range(len(self.modelNumbers)),getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora"] , [d3[0], d3[1], "Treeorb"] ], "CM compare")
+			#from extern import getTreeorbDist
+			#d3 = getTreeorbDist()
+			#plot2d([[range(len(self.modelNumbers)), self.calcCenterOfMassDistance(), "calc" ], [range(len(self.modelNumbers)),getCMcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "nora"] , [d3[0], d3[1], "Treeorb"] ], "CM compare")
 
 		def OnCenterDistanceExtCompare(self, event):
 			print("EXT center distance COMPARE")
 			indices1, indices2 = self.selectObjects()
-			from extern import getMedcent, getCMcent
-			plot2d([[range(len(self.modelNumbers)), getMedcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "medcent"],[range(len(self.modelNumbers)), getCMcent(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "cmcent"]], "NORA center distance" )
+			from extern import getMedcentDistance, getCMcentDistance
+			plot2d([[range(len(self.modelNumbers)), getMedcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "medcent"],[range(len(self.modelNumbers)), getCMcentDistance(self.modelNumbers, min(indices1)+1, max(indices1)+1, min(indices2)+1, max(indices2)+1), "cmcent"]], "NORA center distance" )
 
 
 		#END	

@@ -290,16 +290,20 @@ para los primeros 2 casos (ángulos 90, 60) y para los otros 2 (ángulos 270, 24
 
 \newpage
 \section*{Evolución del modelo}
-\paragraph{tree500}
 
-Los videos de la evolución del modelo(con nombres $sep<SEP>-<DEG>deg-<OBJ>[<PROJAXIS>].mp4$ donde $<SEP>$ y $<DEG>$ son la separación y angulo theta1 de setorbdat, $<OBJ>$ = 2ob para los 2 objetos(solo bulbo y disco), e para el modelo esférico(solo bulbo) y d para el modelo con disco(solo bulbo y disco). $[<PROJAXIS>]$ (opcional) es línea de visión )
+Los videos de la evolución del modelo(con nombres $sep<SEP>-<DEG>deg-<OBJ>[<PROJAXIS>].mp4 $ donde $<SEP>$ y $<DEG>$ son la separación y angulo theta1 de setorbdat, $<OBJ>$ = 2ob para los 2 objetos(solo bulbo y disco), e para el modelo esférico(solo bulbo) y d para el modelo con disco(solo bulbo y disco) y  $[<PROJAXIS>]$ (opcional) es línea de visión )
 están en el repositorio:
 \url{https://github.com/beevageeva/simnum2/tree/master/results2/videos}
 \small
 \begin{verbatim}
-sep10-90deg-2ob.mp4 sep10-90deg-dox.mp4 sep10-90deg-doy.mp4 sep10-90deg-e.mp4 sep20-270deg-2ob.mp4
-sep20-270deg-dox.mp4 sep20-270deg-doy.mp4 sep20-270deg-e.mp4 sep5-90deg-2ob.mp4 sep5-90deg-dox.mp4
-sep5-90deg-doy.mp4 sep5-90deg-eox.mp4 sep5-90deg-eoy.mp4
+sep10-90deg-2ob.mp4 sep10-90deg-dox.mp4 sep10-90deg-doy.mp4 sep10-90deg-e.mp4
+sep20-270deg-2ob.mp4 sep20-270deg-dox.mp4 sep20-270deg-doy.mp4 sep20-270deg-e.mp4
+sep5-240deg-2ob.mp4 sep5-240deg-dox.mp4 sep5-240deg-doy.mp4 sep5-240deg-eox.mp4
+sep5-240deg-eoy.mp4 sep5-270deg-2ob.mp4 sep5-270deg-dox.mp4 sep5-270deg-doy.mp4
+sep5-270deg-eox.mp4 sep5-270deg-eoy.mp4 sep5-60deg-2ob.mp4 sep5-60deg-dox.mp4
+sep5-60deg-doy.mp4 sep5-60deg-e.mp4 sep5-60deg-eox.mp4 sep5-60deg-eoy.mp4
+sep5-90deg-2ob.mp4 sep5-90deg-dox.mp4 sep5-90deg-doy.mp4 sep5-90deg-eox.mp4
+sep5-90deg-eoy.mp4
 \end{verbatim}
 
 \normalsize
@@ -341,6 +345,12 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
 
 \begin{figure}[!ht]
  \centering
+ \includegraphics[scale=0.2]{sep5-90deg-eox.png}
+ \caption{\emph{ ángulo = 90 grados, el objeto esférico visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
+
+\begin{figure}[!ht]
+ \centering
  \includegraphics[scale=0.2]{sep590deg-2ox.png}
  \caption{\emph{ ángulo = 90 grados, el objeto esférico visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
 \end{figure}
@@ -363,6 +373,17 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
  \caption{\emph{ ángulo = 270 grados, el objeto con disco visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
 \end{figure}
 
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep5-270deg-eoy.png}
+ \caption{\emph{ ángulo = 270 grados, el objeto esférico visto en la dirección oy(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep5-270deg-eox.png}
+ \caption{\emph{ ángulo = 270 grados, el objeto esférico visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
 
 \begin{figure}[!ht]
  \centering
@@ -384,6 +405,18 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
 
 \begin{figure}[!ht]
  \centering
+ \includegraphics[scale=0.2]{sep5-60deg-eoy.png}
+ \caption{\emph{ ángulo = 60 grados, el objeto esférico visto en la dirección oy(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep5-60deg-eox.png}
+ \caption{\emph{ ángulo = 60 grados, el objeto esférico visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
+
+\begin{figure}[!ht]
+ \centering
  \includegraphics[scale=0.2]{240deg-m.png}
  \caption{\emph{ ángulo = 240 grados, los 2 objetos(solo parte luminosa) modelo 1,2,3,39 }}
 \end{figure}
@@ -394,12 +427,26 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
  \caption{\emph{ ángulo = 240 grados, el objeto con disco visto en la dirección oy(solo parte luminosa) modelo 0,1,2,3,4,39 }}
 \end{figure}
 
+\clearpage
+
+
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.2]{240deg-m-c2.png}
  \caption{\emph{ ángulo = 240 grados, el objeto con disco visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
 \end{figure}
 
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep5-240deg-eoy.png}
+ \caption{\emph{ ángulo = 240 grados, el objeto esférico visto en la dirección oy(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep5-240deg-eox.png}
+ \caption{\emph{ ángulo = 240 grados, el objeto esférico visto en la dirección ox(solo parte luminosa) modelo 1,2,3,39 }}
+\end{figure}
 
 
 
@@ -419,71 +466,163 @@ La relación entre el número de modelo y el tiempo es: t = noutbod * dt * numMo
 \clearpage
 \newpage
 
+En el primer encuentro el objeto esférico va a atravesar el disco atrayendo partículas de este:
+la forma curvada de los brazos espirales se estropea después del primer encuentro, 
+haciendo que la parte luminosa del objeto con disco se parezca a una rueda de caro al largo de ox: explicación para la galaxia Cartwheel. 
+
 Cuando el disco es perpendicular al plano de la órbita (ángulo = 90, 270) 
-durante la evolución los objetos tienen simétria  radial vistos en el plano yoz(línea de vision ox). 
-Cuanto menor es la separación inicial el objeto esférico es más compacto y tiene mayor velocidad relativa al objeto con disco en el primer encuentro y lo va a atravesar con mayor velocidad atrayendo particulas de este (cartwheel: ver las imagenes del disco visto en la dirección ox - para menor separación el anillo hueco es mas pronunciado)
-Cuando el disco no es perpendicular al plano de la órbita , la velocidad de rotación del disco va a tener una componente en la dirección ox que se va a sumar o restar a la velocidad del otro objeto dependiendo del sentido de rotación (las imágenes del disco en el plano yoz de los ángulos 60 y 270 no tienen más simetría radial, pero las imágenes al largo de la línea ox de los objetos en el caso  ángulo = 60 son imágenes en espejo de los objetos en el caso ángulo = 270) 
-En los encuentros posteriores las partículas del objeto esférico que no se han escapado van a tener menos velocidad y el anillo cartwheel va a desaparecer. 
+durante la evolución los objetos tienen simétria cási radial vistos al largo de la línea ox y simetría con respecto al axis oz vistos en el plano xoz y al axis oy vistos en el plano xoy.
 
-Mirando Ebind en nora vemos que del objeto con disco se escapan mucho menos partículas que en el objeto esférico porque es mas masivo y tiene mas energia potencial y la mayor parte de las partículas se van en los primeros 2 encuentros 
+Cuanto menor es la separación inicial el objeto esférico es más compacto y va a deformar mas el disco en la dirección ox y hasta una distancia menor desde el centro: el anillo hueco con los brazos de la rueda es mas extenso, pero mas difuso para una separación mayor
 
-\begin{figure}[!ht]
- \centering
- \includegraphics[scale=0.2]{ebindsep5.png}
- \caption{\emph{ Separación = 5 , ángulo = 90 grados,la primera fila: Ebind para el modelo con disco, la segunda Ebind para el modelos esférico, las particulas con energía positiva se van a escapar. Las columnas representan modelo 1,2,40.No parece que haya muchas mas partículas que se escapan en el último modelo comparado con el modelo 2 }}
-\end{figure}
+Para ángulos theta1 = 60 y 270 grados el objeto con disco no tiene más simetría con respecto al axis oz en el plano xoz
+(hay una cola que se forma en la parte de abajo($z<0$) en la dirección ox) 
+y porque la velocidad de rotación del disco va a tener una componente en la dirección ox que se va a sumar o restar a la 
+velocidad del otro objeto mas pequeño dependiendo del sentido de rotación el disco se va a alabear en la dirección 
+positiva de ox para $y > 0$ cuando el ángulo = 240 grados  y para $y<0$ cuando el ángulo = 60 de grados,
+pero vistos en el plano yoz el disco para angulo = 60deg es casi 
+antisimétrico al disco para ángulo = 240deg con respecto al axis oz ($y_{60deg} = -y_{240deg} $)
+
+En los encuentros posteriores las partículas que no se han escapado definitivamente  en el primer encuentro(solo se escapan partículas del objeto esférico - como se vera más adelante) van a tener menor velocidad y el anillo cartwheel va a desaparecer. 
 
 
+\subsection*{Análisis para el caso separación = 5, ángulo = 90}
+
+
+\paragraph{Equilibrio hidrostático}
 El sistema no alcanza el equilibrio. Miramos el gráfico del radio para varios valores de la fracción de masa y comprobamos si se cumple T. virial
 
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.2]{rmsep5.png}
- \caption{\emph{ Separación = 5 , ángulo = 90 grados,Rm obtenido en nora: primera fila el objeto con disco, la segunda el modelo esférico, la primera columna el objeto entero, la segunda solo la parte luminosa }}
+ \caption{\emph{Rm obtenido en nora: primera fila el objeto con disco, la segunda el modelo esférico, la primera columna el objeto entero, la segunda solo la parte luminosa }}
 \end{figure}
+
+En realidad el objeto con disco no se expande tanto: algunas partículas se escapan, pero el disco se hace cada vez mas grueso hasta que se convierta  en  una esfera con el radio 1-2 veces mayor  al radio inicial del disco. 
+Creo que nora tiene en cuenta la posición inicial de las partículas en el output de Rm
+
+Mirando Ebind en nora vemos que del objeto con disco se escapan mucho menos partículas que en el objeto esférico (porque es mas masivo y tiene mas energia  de ligadura). 
+
+Las partículas del objeto con disco que se escapan van orbitando alrededor de centro de masas cada vez a radio mayor igual que algunas partículas del modelo esférico (por eso la forma de escalera de los gráficos de Rm en función de tiempo).
+ 
+Pero en el modelo esférico hay algunas partículas que se encuentran en el momento incial en la parte exterior (entre radio masa 90\% - 99\% ) que se van alejando constantemente del centro de masas después del primer encuentro: por eso la línea recta para el radio de la fracción de masa 99\% en el modelo esférico y la cola  que se ve en Ebind para el modelo esférico.
+
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{ebindsep5.png}
+ \caption{\emph{ Ebind en nora. La primera fila: el modelo con disco, la segunda el modelo esférico, las particulas con energía positiva se van a escapar. Las columnas representan modelo 1,2,40.
+}}
+\end{figure}
+
+También se puede observar en las imágenes de la evolución la cola formada por las partículas del modelo esférico que se está alejando en la dirección -ox
+
 
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.4]{vt.png}
- \caption{\emph{ Separación = 5 , ángulo = 90 grados,T. virial no se cumple }}
+ \caption{\emph{T. virial no se cumple (2Ek+Ep frente al tiempo)}}
 \end{figure}
 
-En realidad el objeto con disco no se expande tanto: algunas partículas se escapan, pero el disco se hace cada vez mas grueso hasta que se convierta  en  una esfera con el radio aprox igual al radio inicial del disco. Comprobamos si ahora se parece más a una elíptica mirando la relación del brillo superficial con $r^4$ y la dispersión de velocidad frente a la velocidad en nora
+\clearpage
+
+\paragraph{Objeto final(fusión)}
+
+Como se ve en el zoom del modelo final las 2 galáxias fusionan en un objeto cási esférico + las partículas que se van escapando orbitando a radios cada vez mayores (son partículas principalmente del modelo esférico)
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{finzoomsep590deg.png}
+ \caption{\emph{zoom en el objeto final}}
+\end{figure}
+
+Miramos las distancias entre los centros de los 2 objetos:
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep5Centerdist.png}
+ \caption{\emph{ distancia entre los centros: en la primera fila medcent en python, en la  segunda  medcent en nora y en la tercera cmcent(comparación entre los valores calculados en python y con nora); en la primera columna solo la parte luminosa, en la segunda incluyendo halo }}
+\end{figure}
+
+En python para cada objeto de los 2 he calculado $medcent = \frac{1}{N}\sum_i{r_i}$ donde N es el número total de partículas del objeto y $r_i$ las posiciones de las partículas del objeto, 
+y $cmcent = \frac{1}{M}\sum_i{r_i m_i}$ donde M es la masa total del objeto, $r_i$ y $m_i$ son las posiciones y masas de las partículas del objeto.
+Teniendo los 2 centros: c1 y c2 (calculados con medcent o cmcent) la distancia entre los 2 es $\sqrt{\sum_i{(c1_{x_i} - c2_{x_i})^2}}$
+Los valores calculados con medcent en python  son diferentes a los obtenidos con medcent en nora(como se calculó allí?, los 2 objetos que contienen la mayor parte de las partículas se quedan a una distancia constante muy pequeña)
+medcent en python y cmcent muestra la distancia creciendo constantemente, pero es por las partículas que se escapan
+
+
+
+\clearpage
+\paragraph{Es el objeto final una galáxia elíptica?}
+Comprobamos si ahora la galáxia con disco se parece más a una \textbf{galáxia elíptica} mirando la relación del brillo superficial con $r^4$ y 
+la dispersión de velocidad frente a la velocidad en nora(las galáxias elípticas tienen más dipersion de 
+velocidad porque el movimiento es mas aleatorio a la diferencia del disco donde la velocidad es de rotación )
 
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.3]{noraellip.png}
- \caption{\emph{ Separación = 5 , ángulo = 90 grados, primera fila: sbr 2 2, segunda fila: rotc 0 radio 0.3, primera columna en el momento inicial, la segunda en el momento final, solo la parte luminosa  }}
+ \caption{\emph{primera fila: sbr 2 2, segunda fila: rotc 0 radio 0.3, primera columna en el momento inicial, la segunda en el momento final, solo la parte luminosa  }}
 \end{figure}
 
-Aunque la dispersión de velocidad crece, sobre todo en el centro, a radio mas grande la velocidad de rotación es mayor que la dispersión de velocidadEl logaritmo del brillo superficial no depende de forma lineal de $r^4$ (la relación de  Vaucouleurs no se comprueba )
-El modelo con disco sigue teniendo un disco(con velocidad ordenada - de rotación)
+Aunque la dispersión de velocidad crece, sobre todo en el centro, a radio mas grande la velocidad de rotación es mayor que la dispersión de velocidad. El logaritmo del brillo superficial no depende de forma lineal de $r^4$ (la relación de  Vaucouleurs no se comprueba).
+Las partículas del disco siguen teniendo el movimiento ordenado de rotación.
 
+Pero como los 2 objetos están casi fusionados miramos el brillo superficial y curva de rotación seleccionando todas las partículas luminosas incluyendo las de la galáxia esférica:
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.3]{norarotsbr2.png}
+ \caption{\emph{El brillo superficial a radio mayor calculado en nora es mayor que debería para que sea una función lineal con respecto a r**4, 
+pero es por las partículas que se escapan. La dispersión de velocidad es ahora mayor que la velocidad de rotación. El conjunto se parece a una elíptica}}
+\end{figure}
+
+\clearpage
 \paragraph{El centro de masas} se va desplazando en la dirección positiva de ox con una velocidad cási constante.(cuando se crea el modelo inicial: en t=0 con setorb los 2 objetos están aliniados en la dirección ox, el centro de masas de los 2 objetos está casi en el origen y a la velocidad de todas las particulas le añade $-\vec{vr}/2 $ (el signo negativo porque van hacía el centro), pero el objeto con disco que es 10 veces más masivo  está situado en la parte negativa de ox y el modelo esférico en la parte positiva)
 
 
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.2]{cmpos-vel.png}
- \caption{\emph{ Separación = 5 , ángulo = 90 grados, la distancia del centro de masas con respecto al origen (los valores calculados con cmcent en nora son exactamente iguales a los de treelog) que crece lineal en el tiempo (velocidad constante) y la velocidad del centro de masas obtenida de treelog }}
+ \caption{\emph{la distancia del centro de masas con respecto al origen 
+(los valores calculados con cmcent en nora son exactamente iguales a los de treelog) 
+que crece lineal en el tiempo (velocidad constante) y la velocidad del centro de masas(casi constante) obtenida de treelog frente al tiempo }}
 \end{figure}
 
-\paragraph{La energía} total se conserva y es positiva (las particulas se escapan)
+\clearpage
+\paragraph{La energía} total se conserva y es positiva (las particulas se escapan). Las partículas del modelo esférico que se escapan 
+(y del modelo con disco, pero hay muchas menos) llevando energía cinética hacen que las demás del  sistema queden mas ligadas (después de un par de encuentros como se ve con medcent en nora los objetos están fusionados), sobre todo después del primer encuentro(cuando la energía cinética alcanza el máximo y la cola de partículas del modelo esférico se  escapa) 
 
 
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.2]{sep590deg-energy.png}
- \caption{\emph{ Separación = 5 , ángulo = 90 grados, izquierda-derecha, arriba-abajo: Energias de treelog, energía cinética (comparación treelog y calculado en python - las diferencias se deben a que noutlog = 2*noutbod), energías cinéticas de los 2 objetos - todas las partículas icluyendo halos }}
+ \caption{\emph{izquierda-derecha, arriba-abajo: Energias de treelog, energía cinética (comparación treelog y calculado en python - las diferencias se deben a que noutlog = 2*noutbod), energías cinéticas de los 2 objetos - todas las partículas icluyendo halos  representadas frente al tiempo}}
 \end{figure}
 
 
+\clearpage
+\paragraph{El momento angular} del disco decrece. 
+El momento angular total del sistema con 2 objetos es cási constante(se conserva).
+
+\begin{figure}[!ht]
+ \centering
+ \includegraphics[scale=0.2]{sep5AM.png}
+ \caption{\emph{la primera fila: am del objeto con disco(la primera columna parte luminosa+halo (comparación con TREEAM), 
+segunda solo parte luminosa, tercera solo halo), la segunda fila : primera col: am del obj esférico parte luminosa+halo
+(comparación conm TREEAM),  la segunda: am total(parte luminosa+halo), la tercera:  misterioso am de treelog }}
+\end{figure}
+
+En python he calculado el momento angular para cada objeto $\vec{am} = \sum_i{m_i (\vec{r_i} - \vec{cm})\times \vec{v_i}} $
+donde $m_i, r_i y v_i$ son las masas, posiciones y velocidades de las partículas del objeto y cm es el centro de masa del objeto
+; y de forma análoga para el momento del sistema de los 2 objetos. Los valores salen distintos de TREEAM (probablemente porque se calcularon con respecto a otro punto y no el centro de masa)
 
 \clearpage
 \newpage
 
 \section*{Código python}
+
+
 \begin{description}
+\item \url{https://github.com/beevageeva/simnum2/tree/master/python/NORA}
 \item makeAsc.py, nora.py, extern.py tienen que estar en la misma carpeta con los ficheros de salida de tree500 : TREE* , además los binarios xvp-asc y nora
 \item determinar el numero de módelos de TREEOUT o del output de tree500
 \item ejecutar 
@@ -496,15 +635,17 @@ El modelo con disco sigue teniendo un disco(con velocidad ordenada - de rotació
 \end{verbatim}
 \item nora.py e un programa python que usa las librerías numpy, matplotlib y wx.
 Se pueden seleccionar los grupos de partículas que son visibles y el objeto a que apartenece cada grupo.
-Hay unos botones para cargar los modelos siguientes y anteriores  
-En el menú las funciones del submenú Each se calculan para las particulas visibles del modelo actual 
+Hay unos botones para cargar los modelos siguientes y anteriores.  
+En el menú las funciones del submenú Each se calculan para las particulas visibles del modelo actual. 
 Todas las funciones de los submenús  Each y All(calc) y  las funciones que calculan RM y Center (of mass) distance se van a  calcular solo para las partículas visibles, los que calculan momento angular y energía en los submenús All(ext) y All(comp)  se calculan para todas las particulas. 
-La explicación es que el momento angular y energía calculados con las herramientas externas (ver extern.py) son valores de los ficheros de salida TREEAM y TREELOG, pero los valores obtenidos con Rm , medcent y cmcent que se ejecutan en nora se pueden calcular para un cierto rango (bodsrange) 
+La explicación es que el momento angular y energía calculados con las herramientas externas (ver extern.py) 
+son valores de los ficheros de salida TREEAM y TREELOG, pero los valores obtenidos con Rm , 
+medcent y cmcent que se ejecutan en nora se pueden calcular para un cierto rango (bodsrange). 
 
 Las funciones del submenú All(calc) pueden tardar un poco porque se calculan para todos los modelos: se usan ficheros *.txt donde se guardan los valores para no calcularlas siempre, también para algunos calculos en nora: ver el parámetro useCalcValues = True  (y donde se usa) en nora.py y extern.py. 
-Los videos se han obtenido de las imagenes generadas con la función Make images del submenú All(calc)
-Pulsando en una particula(onpick event) se va a representar el vector de la velocidad(multiplicado por una constante que por defecto es 10, se puede cambiar con el slider)
-Hay 2 sliders que representan el valor con cual se multiplica el módulo de la velocidad y momento angular en un instante (en el submenú Each)
+Los videos se han obtenido de las imagenes generadas con la función Make images del submenú All(calc).
+Pulsando en una particula(onpick event) se va a representar el vector de la velocidad(multiplicado por una constante que por defecto es 10, se puede cambiar con el slider).
+Hay 2 sliders que representan el valor con cual se multiplica el módulo de la velocidad y momento angular en un instante (en el submenú Each).
 Mirar también el output del programa
 
 \end{description}
