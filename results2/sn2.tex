@@ -143,11 +143,10 @@
 
 
 \begin{document}
-\title{Colisión de un sistema con disco con un satélite esférico con relación de masas 10:1 en una órbita polar}
-\section*{Condiciones iniciales}
-
+\paragraph{Colisión de un sistema con disco con un satélite esférico con relación de masas 10:1 en una órbita polar}
 \paragraph{Unidades}
 Se usa un sistema de unidades en cual G = 1, [M] = $10^{11} M_{Sol}$, [l] = 1kpc $\implies$ [v]= 655.85 km/s [t] = 1.49My
+\section*{Condiciones iniciales}
 
 
 \subsection*{los modelos individuales}
@@ -159,7 +158,7 @@ Se usa un sistema de unidades en cual G = 1, [M] = $10^{11} M_{Sol}$, [l] = 1kpc
 \item El modelo elíptico se escala a una masa total 0.1 (cuando se escalan los modelos el radio se escala también para que se cumpla la relación: $\frac{R_1}{R_2} = \sqrt{\frac{M_1}{M_2}}$). Es mejor escalar el segundo modelo antes de ponerlos en órbita usando \textbf{scale} y no especificando estas relaciones en setorbdat porque parece que no funciona
 \item los parámetros que se van a configurar para tree500 en TREEPAR: dt y eps dependen de estos modelos iniciales
 \begin{description}
-\item En la práctica usamos valores máximos para  dt = $\frac{1}{20} t_{cruce} = \frac{1}{20} \sqrt{\frac{R^3}{M}}$ y eps = $0.2 R$ donde R es el radio de media masa y M es la media masa de la parte luminos elijiendo los valores mas pequeños de los 2 modelos
+\item En la práctica usamos valores máximos para  dt = $\frac{1}{20} t_{cruce} = \frac{1}{20} \sqrt{\frac{R^3}{M}}$ y eps = $0.2 R$ donde R es el radio de media masa y M es la media masa de la parte luminosa elijiendo los valores mas pequeños de los 2 modelos
 \item
 \small
 \begin{verbatim}
@@ -310,7 +309,7 @@ sep5-90deg-eoy.mp4
 
 
 
-Voy a representar los primeros encuentros (el modelo esférico está atravesando el disco - en caso de la sepración = 5 el primer encuentro pasa en el modelo 1) y el penúltimo (modelo 39)
+Voy a representar los primeros encuentros (el modelo esférico está atravesando el disco - en el caso de la separación = 5 el primer encuentro pasa en el modelo 1) y el penúltimo (modelo 39)
 \tiny Quería representar el último modelo, pero me equivoqué cuando generé las imágenes(para separación = 5 y 10) y no las rehice porque son muy parecidos. Además para separación = 20 la simulación se colgó y solo se se calcularon 236 modelos(en lugar de 300)
 
 \normalsize
@@ -483,7 +482,7 @@ positiva de ox para $y > 0$ cuando el ángulo = 240 grados  y para $y<0$ cuando 
 pero vistos en el plano yoz el disco para angulo = 60deg es casi 
 antisimétrico al disco para ángulo = 240deg con respecto al axis oz ($y_{60deg} = -y_{240deg} $)
 
-En los encuentros posteriores las partículas que no se han escapado definitivamente  en el primer encuentro(solo se escapan partículas del objeto esférico - como se vera más adelante) van a tener menor velocidad y el anillo cartwheel va a desaparecer. 
+En los encuentros posteriores las partículas que no se han escapado definitivamente  en el primer encuentro(solo se escapan partículas del objeto esférico - como se verá más adelante) van a tener menor velocidad y el anillo cartwheel va a desaparecer. 
 
 
 \subsection*{Análisis para el caso separación = 5, ángulo = 90}
@@ -528,12 +527,15 @@ También se puede observar en las imágenes de la evolución la cola formada por
 
 \paragraph{Objeto final(fusión)}
 
-Como se ve en el zoom del modelo final las 2 galáxias fusionan en un objeto cási esférico + las partículas que se van escapando orbitando a radios cada vez mayores (son partículas principalmente del modelo esférico)
+Como se ve en el zoom del modelo final las 2 galáxias fusionan en un objeto cási esférico(con el radio parecido al radio inicial del disco 1-2 veces mayor) + las partículas que se van escapando orbitando a radios cada vez mayores (son partículas principalmente del modelo esférico)
 \begin{figure}[!ht]
  \centering
  \includegraphics[scale=0.2]{finzoomsep590deg.png}
  \caption{\emph{zoom en el objeto final}}
 \end{figure}
+
+Los modelos que tienen el disco inicial inclinado con respecto al plano de la órbita tambien acaban en un objeto compacto en el centro
+ cási esférico curvado según el plano del disco inicial.
 
 Miramos las distancias entre los centros de los 2 objetos:
 
@@ -624,7 +626,7 @@ donde $m_i, r_i y v_i$ son las masas, posiciones y velocidades de las partícula
 \begin{description}
 \item \url{https://github.com/beevageeva/simnum2/tree/master/python/NORA}
 \item makeAsc.py, nora.py, extern.py tienen que estar en la misma carpeta con los ficheros de salida de tree500 : TREE* , además los binarios xvp-asc y nora
-\item determinar el numero de módelos de TREEOUT o del output de tree500
+\item determinar el número de modelos de TREEOUT o del output de tree500
 \item ejecutar 
 \begin{verbatim}
 	python makeAsc.py --numModels=41
@@ -646,6 +648,7 @@ Las funciones del submenú All(calc) pueden tardar un poco porque se calculan pa
 Los videos se han obtenido de las imagenes generadas con la función Make images del submenú All(calc).
 Pulsando en una particula(onpick event) se va a representar el vector de la velocidad(multiplicado por una constante que por defecto es 10, se puede cambiar con el slider).
 Hay 2 sliders que representan el valor con cual se multiplica el módulo de la velocidad y momento angular en un instante (en el submenú Each).
+
 Mirar también el output del programa
 
 \end{description}

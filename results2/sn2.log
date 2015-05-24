@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.5.17)  24 MAY 2015 19:50
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.5.17)  24 MAY 2015 20:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -839,17 +839,17 @@ LaTeX Info: Redefining \nameref on input line 145.
 \@outlinefile=\write3
 \openout3 = `sn2.out'.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 150.
+LaTeX Font Info:    Try loading font information for U+msa on input line 148.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 150.
+LaTeX Font Info:    Try loading font information for U+msb on input line 148.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Overfull \hbox (46.23027pt too wide) in paragraph at lines 169--169
+Overfull \hbox (46.23027pt too wide) in paragraph at lines 168--168
  []  \OT1/cmtt/m/n/10.95 getmodel:: nbods =   70000.0000       iteration =   30
 0.000000       time =   16.0200100[] 
  []
@@ -857,125 +857,125 @@ Overfull \hbox (46.23027pt too wide) in paragraph at lines 169--169
 [1
 
 {/usr/share/texlive/texmf-dist/fonts/map/pdftex/updmap/pdftex.map}] [2]
-[3] <inimod_sep5.png, id=35, 2007.5pt x 1505.625pt>
+[3] <inimod_sep5.png, id=36, 2007.5pt x 1505.625pt>
 File: inimod_sep5.png Graphic file (type png)
  <use inimod_sep5.png>
-Package pdftex.def Info: inimod_sep5.png used on input line 275.
+Package pdftex.def Info: inimod_sep5.png used on input line 274.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<inimoddisco_sep5.png, id=36, 2007.5pt x 752.8125pt>
+<inimoddisco_sep5.png, id=37, 2007.5pt x 752.8125pt>
 File: inimoddisco_sep5.png Graphic file (type png)
 
 <use inimoddisco_sep5.png>
-Package pdftex.def Info: inimoddisco_sep5.png used on input line 282.
+Package pdftex.def Info: inimoddisco_sep5.png used on input line 281.
 (pdftex.def)             Requested size: 401.49289pt x 150.55983pt.
  [4 <./inimod_sep5.png> <./inimoddisco_sep5.png>]
-<90deg_m_sep5.png, id=45, 2007.5pt x 1505.625pt>
+<90deg_m_sep5.png, id=46, 2007.5pt x 1505.625pt>
 File: 90deg_m_sep5.png Graphic file (type png)
  <use 90deg_m_sep5.png>
-Package pdftex.def Info: 90deg_m_sep5.png used on input line 324.
+Package pdftex.def Info: 90deg_m_sep5.png used on input line 323.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<90deg-m-c2y.png, id=46, 2007.5pt x 2258.4375pt>
+<90deg-m-c2y.png, id=47, 2007.5pt x 2258.4375pt>
 File: 90deg-m-c2y.png Graphic file (type png)
  <use 90deg-m-c2y.png>
-Package pdftex.def Info: 90deg-m-c2y.png used on input line 330.
+Package pdftex.def Info: 90deg-m-c2y.png used on input line 329.
 (pdftex.def)             Requested size: 401.49289pt x 451.6795pt.
 
-<90deg-m-c2.png, id=47, 2007.5pt x 1505.625pt>
+<90deg-m-c2.png, id=48, 2007.5pt x 1505.625pt>
 File: 90deg-m-c2.png Graphic file (type png)
  <use 90deg-m-c2.png>
-Package pdftex.def Info: 90deg-m-c2.png used on input line 336.
+Package pdftex.def Info: 90deg-m-c2.png used on input line 335.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<sep590deg-2oy.png, id=48, 2007.5pt x 1505.625pt>
+<sep590deg-2oy.png, id=49, 2007.5pt x 1505.625pt>
 File: sep590deg-2oy.png Graphic file (type png)
  <use sep590deg-2oy.png>
-Package pdftex.def Info: sep590deg-2oy.png used on input line 342.
+Package pdftex.def Info: sep590deg-2oy.png used on input line 341.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<sep5-90deg-eox.png, id=49, 1606.0pt x 1120.185pt>
+<sep5-90deg-eox.png, id=50, 1606.0pt x 1120.185pt>
 File: sep5-90deg-eox.png Graphic file (type png)
  <use sep5-90deg-eox.png>
-Package pdftex.def Info: sep5-90deg-eox.png used on input line 348.
+Package pdftex.def Info: sep5-90deg-eox.png used on input line 347.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<sep590deg-2ox.png, id=50, 1606.0pt x 1120.185pt>
+<sep590deg-2ox.png, id=51, 1606.0pt x 1120.185pt>
 File: sep590deg-2ox.png Graphic file (type png)
  <use sep590deg-2ox.png>
-Package pdftex.def Info: sep590deg-2ox.png used on input line 354.
+Package pdftex.def Info: sep590deg-2ox.png used on input line 353.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<270deg_m_sep5.png, id=51, 2007.5pt x 1505.625pt>
+<270deg_m_sep5.png, id=52, 2007.5pt x 1505.625pt>
 File: 270deg_m_sep5.png Graphic file (type png)
  <use 270deg_m_sep5.png>
-Package pdftex.def Info: 270deg_m_sep5.png used on input line 360.
+Package pdftex.def Info: 270deg_m_sep5.png used on input line 359.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<270deg-m-c2y.png, id=52, 2007.5pt x 2258.4375pt>
+<270deg-m-c2y.png, id=53, 2007.5pt x 2258.4375pt>
 File: 270deg-m-c2y.png Graphic file (type png)
  <use 270deg-m-c2y.png>
-Package pdftex.def Info: 270deg-m-c2y.png used on input line 366.
+Package pdftex.def Info: 270deg-m-c2y.png used on input line 365.
 (pdftex.def)             Requested size: 401.49289pt x 451.6795pt.
 
-<270deg-m-c2.png, id=53, 2007.5pt x 2258.4375pt>
+<270deg-m-c2.png, id=54, 2007.5pt x 2258.4375pt>
 File: 270deg-m-c2.png Graphic file (type png)
  <use 270deg-m-c2.png>
-Package pdftex.def Info: 270deg-m-c2.png used on input line 372.
+Package pdftex.def Info: 270deg-m-c2.png used on input line 371.
 (pdftex.def)             Requested size: 401.49289pt x 451.6795pt.
 
-<sep5-270deg-eoy.png, id=54, 1606.0pt x 1120.185pt>
+<sep5-270deg-eoy.png, id=55, 1606.0pt x 1120.185pt>
 File: sep5-270deg-eoy.png Graphic file (type png)
  <use sep5-270deg-eoy.png>
-Package pdftex.def Info: sep5-270deg-eoy.png used on input line 378.
+Package pdftex.def Info: sep5-270deg-eoy.png used on input line 377.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<sep5-270deg-eox.png, id=55, 1606.0pt x 1120.185pt>
+<sep5-270deg-eox.png, id=56, 1606.0pt x 1120.185pt>
 File: sep5-270deg-eox.png Graphic file (type png)
  <use sep5-270deg-eox.png>
-Package pdftex.def Info: sep5-270deg-eox.png used on input line 384.
+Package pdftex.def Info: sep5-270deg-eox.png used on input line 383.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<60deg-m.png, id=56, 2007.5pt x 1505.625pt>
+<60deg-m.png, id=57, 2007.5pt x 1505.625pt>
 File: 60deg-m.png Graphic file (type png)
  <use 60deg-m.png>
-Package pdftex.def Info: 60deg-m.png used on input line 390.
+Package pdftex.def Info: 60deg-m.png used on input line 389.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<60deg-m-c2y.png, id=57, 2007.5pt x 2258.4375pt>
+<60deg-m-c2y.png, id=58, 2007.5pt x 2258.4375pt>
 File: 60deg-m-c2y.png Graphic file (type png)
  <use 60deg-m-c2y.png>
-Package pdftex.def Info: 60deg-m-c2y.png used on input line 396.
+Package pdftex.def Info: 60deg-m-c2y.png used on input line 395.
 (pdftex.def)             Requested size: 401.49289pt x 451.6795pt.
 
-<60deg-m-c2.png, id=58, 2007.5pt x 1505.625pt>
+<60deg-m-c2.png, id=59, 2007.5pt x 1505.625pt>
 File: 60deg-m-c2.png Graphic file (type png)
  <use 60deg-m-c2.png>
-Package pdftex.def Info: 60deg-m-c2.png used on input line 402.
+Package pdftex.def Info: 60deg-m-c2.png used on input line 401.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<sep5-60deg-eoy.png, id=59, 1606.0pt x 1120.185pt>
+<sep5-60deg-eoy.png, id=60, 1606.0pt x 1120.185pt>
 File: sep5-60deg-eoy.png Graphic file (type png)
  <use sep5-60deg-eoy.png>
-Package pdftex.def Info: sep5-60deg-eoy.png used on input line 408.
+Package pdftex.def Info: sep5-60deg-eoy.png used on input line 407.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<sep5-60deg-eox.png, id=60, 1606.0pt x 1120.185pt>
+<sep5-60deg-eox.png, id=61, 1606.0pt x 1120.185pt>
 File: sep5-60deg-eox.png Graphic file (type png)
  <use sep5-60deg-eox.png>
-Package pdftex.def Info: sep5-60deg-eox.png used on input line 414.
+Package pdftex.def Info: sep5-60deg-eox.png used on input line 413.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<240deg-m.png, id=61, 2007.5pt x 1505.625pt>
+<240deg-m.png, id=62, 2007.5pt x 1505.625pt>
 File: 240deg-m.png Graphic file (type png)
  <use 240deg-m.png>
-Package pdftex.def Info: 240deg-m.png used on input line 420.
+Package pdftex.def Info: 240deg-m.png used on input line 419.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<240deg-m-c2y.png, id=62, 2007.5pt x 2258.4375pt>
+<240deg-m-c2y.png, id=63, 2007.5pt x 2258.4375pt>
 File: 240deg-m-c2y.png Graphic file (type png)
  <use 240deg-m-c2y.png>
-Package pdftex.def Info: 240deg-m-c2y.png used on input line 426.
+Package pdftex.def Info: 240deg-m-c2y.png used on input line 425.
 (pdftex.def)             Requested size: 401.49289pt x 451.6795pt.
 
 [5 <./90deg_m_sep5.png>] [6 <./90deg-m-c2y.png>] [7 <./90deg-m-c2.png> <./sep59
@@ -984,41 +984,41 @@ sep5.png>] [10 <./270deg-m-c2y.png>] [11 <./270deg-m-c2.png>] [12 <./sep5-270de
 g-eoy.png> <./sep5-270deg-eox.png>] [13 <./60deg-m.png>] [14 <./60deg-m-c2y.png
 >] [15 <./60deg-m-c2.png> <./sep5-60deg-eoy.png>] [16 <./sep5-60deg-eox.png> <.
 /240deg-m.png>] [17 <./240deg-m-c2y.png>]
-<240deg-m-c2.png, id=136, 2007.5pt x 1505.625pt>
+<240deg-m-c2.png, id=137, 2007.5pt x 1505.625pt>
 File: 240deg-m-c2.png Graphic file (type png)
  <use 240deg-m-c2.png>
-Package pdftex.def Info: 240deg-m-c2.png used on input line 435.
+Package pdftex.def Info: 240deg-m-c2.png used on input line 434.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
 
-<sep5-240deg-eoy.png, id=137, 1606.0pt x 1120.185pt>
+<sep5-240deg-eoy.png, id=138, 1606.0pt x 1120.185pt>
 File: sep5-240deg-eoy.png Graphic file (type png)
  <use sep5-240deg-eoy.png>
-Package pdftex.def Info: sep5-240deg-eoy.png used on input line 441.
+Package pdftex.def Info: sep5-240deg-eoy.png used on input line 440.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<sep5-240deg-eox.png, id=138, 1606.0pt x 1120.185pt>
+<sep5-240deg-eox.png, id=139, 1606.0pt x 1120.185pt>
 File: sep5-240deg-eox.png Graphic file (type png)
  <use sep5-240deg-eox.png>
-Package pdftex.def Info: sep5-240deg-eox.png used on input line 447.
+Package pdftex.def Info: sep5-240deg-eox.png used on input line 446.
 (pdftex.def)             Requested size: 321.19432pt x 224.03302pt.
 
-<sep10.png, id=139, 3011.25pt x 2258.4375pt>
+<sep10.png, id=140, 3011.25pt x 2258.4375pt>
 File: sep10.png Graphic file (type png)
  <use sep10.png>
-Package pdftex.def Info: sep10.png used on input line 455.
+Package pdftex.def Info: sep10.png used on input line 454.
 (pdftex.def)             Requested size: 602.23933pt x 451.6795pt.
 
-Overfull \hbox (75.86333pt too wide) in paragraph at lines 455--456
+Overfull \hbox (75.86333pt too wide) in paragraph at lines 454--455
  [][] 
  []
 
-<sep20.png, id=140, 3011.25pt x 2258.4375pt>
+<sep20.png, id=141, 3011.25pt x 2258.4375pt>
 File: sep20.png Graphic file (type png)
  <use sep20.png>
-Package pdftex.def Info: sep20.png used on input line 462.
+Package pdftex.def Info: sep20.png used on input line 461.
 (pdftex.def)             Requested size: 602.23933pt x 451.6795pt.
 
-Overfull \hbox (75.86333pt too wide) in paragraph at lines 462--463
+Overfull \hbox (75.86333pt too wide) in paragraph at lines 461--462
  [][] 
  []
 
@@ -1026,94 +1026,94 @@ Overfull \hbox (75.86333pt too wide) in paragraph at lines 462--463
 
  <./240deg-m-c2.png> <./sep5-240deg-eoy.png>] [19 <./sep5-240deg-eox.png>]
 [20 <./sep10.png>] [21 <./sep20.png>]
-<rmsep5.png, id=163, 2007.5pt x 1505.625pt>
+<rmsep5.png, id=164, 2007.5pt x 1505.625pt>
 File: rmsep5.png Graphic file (type png)
  <use rmsep5.png>
-Package pdftex.def Info: rmsep5.png used on input line 497.
+Package pdftex.def Info: rmsep5.png used on input line 496.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
  [22
 
- <./rmsep5.png>] <ebindsep5.png, id=172, 2409.0pt x 1204.5pt>
+ <./rmsep5.png>] <ebindsep5.png, id=173, 2409.0pt x 1204.5pt>
 File: ebindsep5.png Graphic file (type png)
  <use ebindsep5.png>
-Package pdftex.def Info: ebindsep5.png used on input line 513.
+Package pdftex.def Info: ebindsep5.png used on input line 512.
 (pdftex.def)             Requested size: 481.79147pt x 240.89574pt.
 
-<vt.png, id=173, 578.16pt x 433.62pt>
+<vt.png, id=174, 578.16pt x 433.62pt>
 File: vt.png Graphic file (type png)
  <use vt.png>
-Package pdftex.def Info: vt.png used on input line 523.
+Package pdftex.def Info: vt.png used on input line 522.
 (pdftex.def)             Requested size: 231.2599pt x 173.44492pt.
- [23 <./ebindsep5.png> <./vt.png>] <finzoomsep590deg.png, id=182, 1606.0pt x 56
+ [23 <./ebindsep5.png> <./vt.png>] <finzoomsep590deg.png, id=183, 1606.0pt x 56
 0.0925pt>
 File: finzoomsep590deg.png Graphic file (type png)
 
 <use finzoomsep590deg.png>
-Package pdftex.def Info: finzoomsep590deg.png used on input line 534.
+Package pdftex.def Info: finzoomsep590deg.png used on input line 533.
 (pdftex.def)             Requested size: 321.19432pt x 112.01651pt.
- <sep5Centerdist.png, id=183, 1606.0pt x 1806.75pt>
+ <sep5Centerdist.png, id=184, 1606.0pt x 1806.75pt>
 File: sep5Centerdist.png Graphic file (type png)
 
 <use sep5Centerdist.png>
-Package pdftex.def Info: sep5Centerdist.png used on input line 542.
+Package pdftex.def Info: sep5Centerdist.png used on input line 544.
 (pdftex.def)             Requested size: 321.19432pt x 361.3436pt.
  [24
 
  <./finzoomsep590deg.png> <./sep5Centerdist.png>]
-[25] <noraellip.png, id=197, 1027.84pt x 1339.0025pt>
+[25] <noraellip.png, id=198, 1027.84pt x 1339.0025pt>
 File: noraellip.png Graphic file (type png)
  <use noraellip.png>
-Package pdftex.def Info: noraellip.png used on input line 562.
+Package pdftex.def Info: noraellip.png used on input line 564.
 (pdftex.def)             Requested size: 308.35437pt x 401.70386pt.
 
-<norarotsbr2.png, id=198, 1606.0pt x 560.0925pt>
+<norarotsbr2.png, id=199, 1606.0pt x 560.0925pt>
 File: norarotsbr2.png Graphic file (type png)
  <use norarotsbr2.png>
-Package pdftex.def Info: norarotsbr2.png used on input line 573.
+Package pdftex.def Info: norarotsbr2.png used on input line 575.
 (pdftex.def)             Requested size: 481.80373pt x 168.02904pt.
  [26
 
  <./noraellip.png>] [27 <./norarotsbr2.png>]
-<cmpos-vel.png, id=210, 2007.5pt x 1505.625pt>
+<cmpos-vel.png, id=211, 2007.5pt x 1505.625pt>
 File: cmpos-vel.png Graphic file (type png)
  <use cmpos-vel.png>
-Package pdftex.def Info: cmpos-vel.png used on input line 584.
+Package pdftex.def Info: cmpos-vel.png used on input line 586.
 (pdftex.def)             Requested size: 401.49289pt x 301.11966pt.
  [28
 
- <./cmpos-vel.png>] <sep590deg-energy.png, id=217, 1606.0pt x 1204.5pt>
+ <./cmpos-vel.png>] <sep590deg-energy.png, id=218, 1606.0pt x 1204.5pt>
 File: sep590deg-energy.png Graphic file (type png)
 
 <use sep590deg-energy.png>
-Package pdftex.def Info: sep590deg-energy.png used on input line 597.
+Package pdftex.def Info: sep590deg-energy.png used on input line 599.
 (pdftex.def)             Requested size: 321.19432pt x 240.89574pt.
  [29
 
  <./sep590deg-energy.png>]
-<sep5AM.png, id=224, 2409.0pt x 1204.5pt>
+<sep5AM.png, id=225, 2409.0pt x 1204.5pt>
 File: sep5AM.png Graphic file (type png)
  <use sep5AM.png>
-Package pdftex.def Info: sep5AM.png used on input line 608.
+Package pdftex.def Info: sep5AM.png used on input line 610.
 (pdftex.def)             Requested size: 481.79147pt x 240.89574pt.
  [30
 
  <./sep5AM.png>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 654.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 657.
 
 [31
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 654.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 657.
  (./sn2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 654.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 654.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 657.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 657.
 Package rerunfilecheck Info: File `sn2.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 654.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 657.
  ) 
 Here is how much of TeX's memory you used:
- 10463 strings out of 494990
- 153158 string characters out of 6180639
+ 10464 strings out of 494990
+ 153169 string characters out of 6180639
  254474 words of memory out of 5000000
  13412 multiletter control sequences out of 15000+600000
  12589 words of font info for 47 fonts, out of 8000000 for 9000
@@ -1132,10 +1132,10 @@ cm/cmss17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pf
 b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on sn2.pdf (31 pages, 5553316 bytes).
+Output written on sn2.pdf (31 pages, 5553869 bytes).
 PDF statistics:
- 303 PDF objects out of 1000 (max. 8388607)
- 217 compressed objects within 3 object streams
- 82 named destinations out of 1000 (max. 500000)
+ 304 PDF objects out of 1000 (max. 8388607)
+ 218 compressed objects within 3 object streams
+ 83 named destinations out of 1000 (max. 500000)
  176 words of extra memory for PDF output out of 10000 (max. 10000000)
 
